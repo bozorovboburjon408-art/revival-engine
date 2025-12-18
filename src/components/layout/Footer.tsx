@@ -1,6 +1,5 @@
 import { Link, useLocation } from "react-router-dom";
-import { BookOpen, Calculator, ClipboardList, LineChart, Github, Mail, ExternalLink, Send } from "lucide-react";
-
+import { BookOpen, ClipboardList, LineChart, Github, Mail, ExternalLink, Send } from "lucide-react";
 export const Footer = () => {
   const location = useLocation();
   const isHomePage = location.pathname === "/";
@@ -73,12 +72,6 @@ export const Footer = () => {
                 <Link to="/library" className="text-muted-foreground hover:text-foreground transition-colors inline-flex items-center gap-2.5 group">
                   <BookOpen className="w-4 h-4 text-primary/60 group-hover:text-primary transition-colors" />
                   Kutubxona
-                </Link>
-              </li>
-              <li>
-                <Link to="/calculator" className="text-muted-foreground hover:text-foreground transition-colors inline-flex items-center gap-2.5 group">
-                  <Calculator className="w-4 h-4 text-primary/60 group-hover:text-primary transition-colors" />
-                  AI Kalkulyator
                 </Link>
               </li>
               <li>

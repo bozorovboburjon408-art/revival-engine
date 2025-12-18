@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import { BookOpen, Calculator, ClipboardList, LineChart, ArrowRight, Sparkles } from "lucide-react";
+import { BookOpen, ClipboardList, LineChart, ArrowRight, Sparkles } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 const features = [
@@ -13,22 +13,13 @@ const features = [
     delay: "0s"
   },
   {
-    icon: Calculator,
-    title: "AI Kalkulyator",
-    description: "Sun'iy intellekt yordamida istalgan matematik masalani yeching. Batafsil yechim bilan.",
-    href: "/calculator",
-    gradient: "from-emerald-400 via-teal-500 to-cyan-600",
-    bgGlow: "bg-emerald-500/20",
-    delay: "0.1s"
-  },
-  {
     icon: ClipboardList,
     title: "Test bo'limi",
-    description: "Mavzular bo'yicha testlar. AI tomonidan tuzilgan savollar va avtomatik natijalar.",
+    description: "Mavzular bo'yicha testlar. Savollar va avtomatik natijalar.",
     href: "/tests",
     gradient: "from-orange-400 via-amber-500 to-yellow-500",
     bgGlow: "bg-orange-500/20",
-    delay: "0.2s"
+    delay: "0.1s"
   },
   {
     icon: LineChart,
@@ -37,7 +28,7 @@ const features = [
     href: "/graphics",
     gradient: "from-purple-500 via-pink-500 to-rose-500",
     bgGlow: "bg-purple-500/20",
-    delay: "0.3s"
+    delay: "0.2s"
   },
 ];
 
@@ -56,7 +47,7 @@ export const FeaturesSection = () => {
             <span>Asosiy imkoniyatlar</span>
           </div>
           <h2 className="text-4xl md:text-6xl mb-6">
-            To'rtta kuchli <span className="gradient-text">bo'lim</span>
+            Uchta kuchli <span className="gradient-text">bo'lim</span>
           </h2>
           <p className="text-lg md:text-xl text-muted-foreground">
             Matematikani o'rganish uchun zarur bo'lgan barcha vositalar bir joyda
