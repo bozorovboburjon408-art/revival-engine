@@ -1,4 +1,4 @@
-import { useState, createContext, useContext } from "react";
+import { useState, createContext, useContext, lazy, Suspense } from "react";
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -11,10 +11,12 @@ import TopicDetail from "./pages/TopicDetail";
 import Formulas from "./pages/Formulas";
 import Calculator from "./pages/Calculator";
 import Tests from "./pages/Tests";
-import Graphics from "./pages/Graphics";
 import AdminLogin from "./pages/AdminLogin";
 import AdminDashboard from "./pages/AdminDashboard";
 import NotFound from "./pages/NotFound";
+
+// Lazy load Graphics page to prevent @react-three/fiber from breaking the app
+const Graphics = lazy(() => import("./pages/Graphics"));
 
 const queryClient = new QueryClient();
 
@@ -32,6 +34,12 @@ export const useSplash = () => {
   }
   return context;
 };
+
+const PageLoader = () => (
+  <div className="min-h-screen flex items-center justify-center">
+    <div className="animate-pulse text-muted-foreground">Yuklanmoqda...</div>
+  </div>
+);
 
 const App = () => {
   const [showSplash, setShowSplash] = useState(() => {
@@ -62,18 +70,20 @@ const App = () => {
             }}
           >
             <BrowserRouter>
-              <Routes>
-                <Route path="/" element={<Index />} />
-                <Route path="/library" element={<Library />} />
-                <Route path="/library/:topicId" element={<TopicDetail />} />
-                <Route path="/formulas" element={<Formulas />} />
-                <Route path="/calculator" element={<Calculator />} />
-                <Route path="/tests" element={<Tests />} />
-                <Route path="/graphics" element={<Graphics />} />
-                <Route path="/admin/login" element={<AdminLogin />} />
-                <Route path="/admin/dashboard" element={<AdminDashboard />} />
-                <Route path="*" element={<NotFound />} />
-              </Routes>
+              <Suspense fallback={<PageLoader />}>
+                <Routes>
+                  <Route path="/" element={<Index />} />
+                  <Route path="/library" element={<Library />} />
+                  <Route path="/library/:topicId" element={<TopicDetail />} />
+                  <Route path="/formulas" element={<Formulas />} />
+                  <Route path="/calculator" element={<Calculator />} />
+                  <Route path="/tests" element={<Tests />} />
+                  <Route path="/graphics" element={<Graphics />} />
+                  <Route path="/admin/login" element={<AdminLogin />} />
+                  <Route path="/admin/dashboard" element={<AdminDashboard />} />
+                  <Route path="*" element={<NotFound />} />
+                </Routes>
+              </Suspense>
             </BrowserRouter>
           </div>
         </SplashContext.Provider>
