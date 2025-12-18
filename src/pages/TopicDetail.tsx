@@ -9,6 +9,7 @@ import remarkMath from "remark-math";
 import remarkGfm from "remark-gfm";
 import rehypeKatex from "rehype-katex";
 import "katex/dist/katex.min.css";
+import { TopicInteractiveVisualization } from "@/components/library/TopicInteractiveVisualization";
 
 const TopicDetail = () => {
   const { topicId } = useParams<{ topicId: string }>();
@@ -75,6 +76,9 @@ const TopicDetail = () => {
                     {topic.content}
                   </ReactMarkdown>
                 </article>
+
+                {/* Interactive Visualization */}
+                <TopicInteractiveVisualization topicId={topic.id} />
               </div>
               <div className="mt-8">
                 <Link to="/library"><Button variant="outline" className="gap-2"><ArrowLeft className="w-4 h-4" />Kutubxonaga qaytish</Button></Link>
