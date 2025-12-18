@@ -54,6 +54,12 @@ const TopicDetail = () => {
               </div>
               <h1 className="font-display text-4xl md:text-5xl mb-4">{topic.title}</h1>
               <p className="text-lg text-muted-foreground mb-6">{topic.description}</p>
+              <Link to="/library">
+                <Button variant="outline" className="gap-2">
+                  <ArrowLeft className="w-4 h-4" />
+                  Kutubxonaga qaytish
+                </Button>
+              </Link>
             </div>
           </div>
         </section>
