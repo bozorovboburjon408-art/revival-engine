@@ -5,13 +5,19 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { RotateCcw, Plus, Trash2 } from "lucide-react";
+import { Badge } from "@/components/ui/badge";
+import { RotateCcw, Plus, Trash2, Crosshair, TrendingUp } from "lucide-react";
 import { toast } from "sonner";
 
 interface FunctionItem {
   id: string;
   expression: string;
   color: string;
+}
+
+interface Point {
+  x: number;
+  y: number;
 }
 
 const COLORS = ['#f97316', '#22c55e', '#3b82f6', '#a855f7', '#ec4899', '#14b8a6'];
@@ -28,12 +34,15 @@ const Graphics = () => {
   const [offset, setOffset] = useState({ x: 0, y: 0 });
   const [isDragging, setIsDragging] = useState(false);
   const [animationKey, setAnimationKey] = useState(0);
+  const [cursorPos, setCursorPos] = useState<Point | null>(null);
+  const [cursorValues, setCursorValues] = useState<{expr: string, y: number, color: string}[]>([]);
+  const [roots, setRoots] = useState<{expr: string, points: number[], color: string}[]>([]);
+  const [intersections, setIntersections] = useState<Point[]>([]);
   const lastMouseRef = useRef({ x: 0, y: 0 });
 
   // Parse and evaluate mathematical expression
   const evaluateExpression = useCallback((expr: string, x: number): number | null => {
     try {
-      // Replace math functions
       let parsed = expr
         .replace(/sin/g, 'Math.sin')
         .replace(/cos/g, 'Math.cos')
@@ -48,7 +57,6 @@ const Graphics = () => {
         .replace(/e(?![x])/g, 'Math.E')
         .replace(/\^/g, '**');
       
-      // Handle implicit multiplication: 2x -> 2*x, x2 -> x*2
       parsed = parsed.replace(/(\d)([x])/gi, '$1*$2');
       parsed = parsed.replace(/([x])(\d)/gi, '$1*$2');
       parsed = parsed.replace(/(\))(\d)/g, '$1*$2');
@@ -67,6 +75,98 @@ const Graphics = () => {
       return null;
     }
   }, []);
+
+  // Calculate derivative numerically
+  const calculateDerivative = useCallback((expr: string, x: number): number | null => {
+    const h = 0.0001;
+    const y1 = evaluateExpression(expr, x - h);
+    const y2 = evaluateExpression(expr, x + h);
+    if (y1 === null || y2 === null) return null;
+    return (y2 - y1) / (2 * h);
+  }, [evaluateExpression]);
+
+  // Find roots (where function crosses X axis)
+  const findRoots = useCallback((expr: string): number[] => {
+    const roots: number[] = [];
+    const step = 0.1;
+    
+    for (let x = -10; x < 10; x += step) {
+      const y1 = evaluateExpression(expr, x);
+      const y2 = evaluateExpression(expr, x + step);
+      
+      if (y1 !== null && y2 !== null && y1 * y2 < 0) {
+        // Newton-Raphson refinement
+        let root = (x + x + step) / 2;
+        for (let i = 0; i < 10; i++) {
+          const y = evaluateExpression(expr, root);
+          const dy = calculateDerivative(expr, root);
+          if (y === null || dy === null || Math.abs(dy) < 0.0001) break;
+          root = root - y / dy;
+        }
+        
+        // Avoid duplicates
+        if (!roots.some(r => Math.abs(r - root) < 0.01)) {
+          roots.push(Math.round(root * 1000) / 1000);
+        }
+      }
+    }
+    
+    return roots;
+  }, [evaluateExpression, calculateDerivative]);
+
+  // Find intersections between two functions
+  const findIntersections = useCallback((expr1: string, expr2: string): Point[] => {
+    const points: Point[] = [];
+    const step = 0.1;
+    
+    for (let x = -10; x < 10; x += step) {
+      const diff1 = (evaluateExpression(expr1, x) ?? 0) - (evaluateExpression(expr2, x) ?? 0);
+      const diff2 = (evaluateExpression(expr1, x + step) ?? 0) - (evaluateExpression(expr2, x + step) ?? 0);
+      
+      if (diff1 * diff2 < 0) {
+        // Binary search for exact point
+        let left = x, right = x + step;
+        for (let i = 0; i < 20; i++) {
+          const mid = (left + right) / 2;
+          const diffMid = (evaluateExpression(expr1, mid) ?? 0) - (evaluateExpression(expr2, mid) ?? 0);
+          if (diff1 * diffMid < 0) right = mid;
+          else left = mid;
+        }
+        
+        const px = (left + right) / 2;
+        const py = evaluateExpression(expr1, px);
+        if (py !== null) {
+          points.push({ 
+            x: Math.round(px * 1000) / 1000, 
+            y: Math.round(py * 1000) / 1000 
+          });
+        }
+      }
+    }
+    
+    return points;
+  }, [evaluateExpression]);
+
+  // Calculate roots and intersections when functions change
+  useEffect(() => {
+    // Find roots for each function
+    const newRoots = functions.map(f => ({
+      expr: f.expression,
+      points: findRoots(f.expression),
+      color: f.color
+    }));
+    setRoots(newRoots);
+
+    // Find intersections between all pairs of functions
+    const newIntersections: Point[] = [];
+    for (let i = 0; i < functions.length; i++) {
+      for (let j = i + 1; j < functions.length; j++) {
+        const pts = findIntersections(functions[i].expression, functions[j].expression);
+        newIntersections.push(...pts);
+      }
+    }
+    setIntersections(newIntersections);
+  }, [functions, findRoots, findIntersections]);
 
   // Reset animation when functions change
   useEffect(() => {
@@ -126,17 +226,15 @@ const Graphics = () => {
       ctx.lineTo(centerX, height);
       ctx.stroke();
 
-      // Axis labels - dynamic based on visible range
+      // Axis labels
       ctx.fillStyle = 'hsl(222, 47%, 60%)';
       ctx.font = '12px monospace';
 
-      // Calculate visible range
       const minX = Math.floor(-centerX / scale);
       const maxX = Math.ceil((width - centerX) / scale);
       const minY = Math.floor(-(height - centerY) / scale);
       const maxY = Math.ceil(centerY / scale);
 
-      // X axis numbers
       for (let i = minX; i <= maxX; i++) {
         if (i === 0) continue;
         const x = centerX + i * scale;
@@ -145,7 +243,6 @@ const Graphics = () => {
         }
       }
 
-      // Y axis numbers
       for (let i = minY; i <= maxY; i++) {
         if (i === 0) continue;
         const y = centerY - i * scale;
@@ -156,14 +253,10 @@ const Graphics = () => {
 
       ctx.fillText('0', centerX + 5, centerY + 15);
 
-      // Calculate animated end position
-      const animatedWidth = Math.min(width, progressRef.current);
-
       // Draw functions with animation
       functions.forEach((func, funcIndex) => {
         if (!func.expression.trim()) return;
 
-        // Stagger animation for each function
         const funcDelay = funcIndex * 80;
         const funcProgress = Math.max(0, progressRef.current - funcDelay);
         const funcWidth = Math.min(width, funcProgress);
@@ -175,7 +268,6 @@ const Graphics = () => {
         ctx.lineCap = 'round';
         ctx.lineJoin = 'round';
         
-        // Add glow effect
         ctx.shadowColor = func.color;
         ctx.shadowBlur = funcWidth < width ? 10 : 0;
 
@@ -217,9 +309,79 @@ const Graphics = () => {
         ctx.shadowBlur = 0;
       });
 
+      // Draw roots (X axis intersections)
+      if (progressRef.current >= width) {
+        roots.forEach(root => {
+          root.points.forEach(x => {
+            const px = centerX + x * scale;
+            const py = centerY;
+            
+            ctx.beginPath();
+            ctx.arc(px, py, 6, 0, Math.PI * 2);
+            ctx.fillStyle = root.color;
+            ctx.fill();
+            ctx.strokeStyle = '#fff';
+            ctx.lineWidth = 2;
+            ctx.stroke();
+          });
+        });
+
+        // Draw function intersections
+        intersections.forEach(point => {
+          const px = centerX + point.x * scale;
+          const py = centerY - point.y * scale;
+          
+          ctx.beginPath();
+          ctx.arc(px, py, 7, 0, Math.PI * 2);
+          ctx.fillStyle = '#fbbf24';
+          ctx.fill();
+          ctx.strokeStyle = '#fff';
+          ctx.lineWidth = 2;
+          ctx.stroke();
+        });
+      }
+
+      // Draw cursor crosshair and values
+      if (cursorPos && !isDragging) {
+        const px = centerX + cursorPos.x * scale;
+        const py = centerY - cursorPos.y * scale;
+
+        // Vertical line
+        ctx.strokeStyle = 'rgba(255, 255, 255, 0.3)';
+        ctx.lineWidth = 1;
+        ctx.setLineDash([5, 5]);
+        ctx.beginPath();
+        ctx.moveTo(px, 0);
+        ctx.lineTo(px, height);
+        ctx.stroke();
+        ctx.setLineDash([]);
+
+        // Draw points on each function
+        functions.forEach(func => {
+          const y = evaluateExpression(func.expression, cursorPos.x);
+          if (y !== null) {
+            const pointY = centerY - y * scale;
+            ctx.beginPath();
+            ctx.arc(px, pointY, 5, 0, Math.PI * 2);
+            ctx.fillStyle = func.color;
+            ctx.fill();
+            ctx.strokeStyle = '#fff';
+            ctx.lineWidth = 2;
+            ctx.stroke();
+          }
+        });
+
+        // Coordinate display
+        ctx.fillStyle = 'rgba(0, 0, 0, 0.8)';
+        ctx.fillRect(px + 10, py - 25, 100, 20);
+        ctx.fillStyle = '#fff';
+        ctx.font = '12px monospace';
+        ctx.fillText(`(${cursorPos.x.toFixed(2)}, ${cursorPos.y.toFixed(2)})`, px + 15, py - 10);
+      }
+
       // Continue animation
       if (progressRef.current < width + functions.length * 80) {
-        progressRef.current += 12; // Speed of animation
+        progressRef.current += 12;
         animationRef.current = requestAnimationFrame(drawFrame);
       }
     };
@@ -229,7 +391,7 @@ const Graphics = () => {
     return () => {
       cancelAnimationFrame(animationRef.current);
     };
-  }, [functions, zoom, offset, animationKey, evaluateExpression]);
+  }, [functions, zoom, offset, animationKey, evaluateExpression, cursorPos, isDragging, roots, intersections]);
 
   const addFunction = () => {
     if (!newExpression.trim()) {
@@ -237,7 +399,6 @@ const Graphics = () => {
       return;
     }
     
-    // Test if expression is valid
     const testResult = evaluateExpression(newExpression, 1);
     if (testResult === null) {
       toast.error("Noto'g'ri funksiya formati");
@@ -275,12 +436,44 @@ const Graphics = () => {
   };
 
   const handleMouseMove = (e: React.MouseEvent) => {
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+
+    const rect = canvas.getBoundingClientRect();
+    const scaleX = canvas.width / rect.width;
+    const scaleY = canvas.height / rect.height;
+    
+    const px = (e.clientX - rect.left) * scaleX;
+    const py = (e.clientY - rect.top) * scaleY;
+    
+    const centerX = canvas.width / 2 + offset.x;
+    const centerY = canvas.height / 2 + offset.y;
+    
+    const x = (px - centerX) / zoom;
+    const y = (centerY - py) / zoom;
+    
+    setCursorPos({ x, y });
+
+    // Calculate function values at cursor
+    const values = functions.map(f => ({
+      expr: f.expression,
+      y: evaluateExpression(f.expression, x) ?? 0,
+      color: f.color
+    })).filter(v => v.y !== null);
+    setCursorValues(values);
+
     if (isDragging) {
       const dx = e.clientX - lastMouseRef.current.x;
       const dy = e.clientY - lastMouseRef.current.y;
       setOffset(prev => ({ x: prev.x + dx, y: prev.y + dy }));
       lastMouseRef.current = { x: e.clientX, y: e.clientY };
     }
+  };
+
+  const handleMouseLeave = () => {
+    setIsDragging(false);
+    setCursorPos(null);
+    setCursorValues([]);
   };
 
   const handleWheel = (e: React.WheelEvent) => {
@@ -317,8 +510,7 @@ const Graphics = () => {
                 <CardTitle className="text-lg">Funksiyalar</CardTitle>
               </CardHeader>
               <CardContent className="space-y-4">
-                {/* Existing functions */}
-                {functions.map((func, index) => (
+                {functions.map((func) => (
                   <div key={func.id} className="flex items-center gap-2">
                     <div 
                       className="w-4 h-4 rounded-full shrink-0"
@@ -342,7 +534,6 @@ const Graphics = () => {
                   </div>
                 ))}
 
-                {/* Add new function */}
                 <div className="flex items-center gap-2 pt-2 border-t border-border">
                   <span className="text-muted-foreground">y =</span>
                   <Input
@@ -363,6 +554,85 @@ const Graphics = () => {
                 </div>
               </CardContent>
             </Card>
+
+            {/* Cursor Info */}
+            {cursorPos && cursorValues.length > 0 && (
+              <Card className="animate-fade-in">
+                <CardHeader className="pb-2">
+                  <CardTitle className="text-sm flex items-center gap-2">
+                    <Crosshair className="h-4 w-4" />
+                    x = {cursorPos.x.toFixed(3)}
+                  </CardTitle>
+                </CardHeader>
+                <CardContent className="space-y-2">
+                  {cursorValues.map((v, i) => (
+                    <div key={i} className="flex items-center justify-between text-sm">
+                      <div className="flex items-center gap-2">
+                        <div className="w-3 h-3 rounded-full" style={{ backgroundColor: v.color }} />
+                        <span className="font-mono text-muted-foreground">{v.expr}</span>
+                      </div>
+                      <span className="font-mono font-semibold">{v.y.toFixed(4)}</span>
+                    </div>
+                  ))}
+                  {cursorValues.length > 0 && (
+                    <div className="pt-2 border-t border-border">
+                      <div className="flex items-center justify-between text-sm">
+                        <span className="flex items-center gap-1 text-muted-foreground">
+                          <TrendingUp className="h-3 w-3" /> Hosila
+                        </span>
+                        <span className="font-mono">
+                          {calculateDerivative(cursorValues[0].expr, cursorPos.x)?.toFixed(4) ?? '—'}
+                        </span>
+                      </div>
+                    </div>
+                  )}
+                </CardContent>
+              </Card>
+            )}
+
+            {/* Roots */}
+            {roots.some(r => r.points.length > 0) && (
+              <Card>
+                <CardHeader className="pb-2">
+                  <CardTitle className="text-sm">Nol nuqtalar (x o'qi bilan kesishish)</CardTitle>
+                </CardHeader>
+                <CardContent className="space-y-2">
+                  {roots.filter(r => r.points.length > 0).map((r, i) => (
+                    <div key={i} className="space-y-1">
+                      <div className="flex items-center gap-2 text-xs text-muted-foreground">
+                        <div className="w-2 h-2 rounded-full" style={{ backgroundColor: r.color }} />
+                        <span className="font-mono">{r.expr}</span>
+                      </div>
+                      <div className="flex flex-wrap gap-1">
+                        {r.points.map((p, j) => (
+                          <Badge key={j} variant="secondary" className="font-mono text-xs">
+                            x = {p}
+                          </Badge>
+                        ))}
+                      </div>
+                    </div>
+                  ))}
+                </CardContent>
+              </Card>
+            )}
+
+            {/* Intersections */}
+            {intersections.length > 0 && (
+              <Card>
+                <CardHeader className="pb-2">
+                  <CardTitle className="text-sm">Kesishish nuqtalari</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="flex flex-wrap gap-1">
+                    {intersections.map((p, i) => (
+                      <Badge key={i} variant="outline" className="font-mono text-xs bg-yellow-500/10 border-yellow-500/30">
+                        ({p.x}, {p.y})
+                      </Badge>
+                    ))}
+                  </div>
+                </CardContent>
+              </Card>
+            )}
 
             {/* Examples */}
             <Card>
@@ -423,15 +693,17 @@ const Graphics = () => {
                   ref={canvasRef}
                   width={700}
                   height={500}
-                  className="w-full rounded-lg cursor-grab active:cursor-grabbing"
+                  className="w-full rounded-lg cursor-crosshair"
                   onMouseDown={handleMouseDown}
                   onMouseMove={handleMouseMove}
                   onMouseUp={() => setIsDragging(false)}
-                  onMouseLeave={() => setIsDragging(false)}
+                  onMouseLeave={handleMouseLeave}
                   onWheel={handleWheel}
                 />
                 <p className="text-xs text-muted-foreground mt-2 text-center">
-                  Suring - ko'chirish | G'ildirak - kattalashtirish
+                  Suring - ko'chirish | G'ildirak - kattalashtirish | 
+                  <span className="text-primary"> ● </span>Nol nuqta | 
+                  <span className="text-yellow-500"> ● </span>Kesishish
                 </p>
               </CardContent>
             </Card>
