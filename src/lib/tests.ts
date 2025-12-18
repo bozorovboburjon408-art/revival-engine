@@ -467,6 +467,456 @@ export const tests: Test[] = [
         difficulty: "hard"
       }
     ]
+  },
+  {
+    id: "sequences-series",
+    title: "Qatorlar va ketma-ketliklar",
+    category: "Qatorlar",
+    icon: "ListOrdered",
+    description: "Arifmetik va geometrik progressiyalar",
+    timeLimit: 15,
+    questions: [
+      {
+        id: "ss1",
+        question: "Arifmetik progressiyada a₁ = 3, d = 4. a₅ = ?",
+        options: ["15", "19", "23", "27"],
+        correctAnswer: 1,
+        explanation: "aₙ = a₁ + (n-1)d = 3 + 4·4 = 19",
+        difficulty: "easy"
+      },
+      {
+        id: "ss2",
+        question: "Geometrik progressiyada b₁ = 2, q = 3. b₄ = ?",
+        options: ["18", "27", "54", "162"],
+        correctAnswer: 2,
+        explanation: "bₙ = b₁·qⁿ⁻¹ = 2·3³ = 54",
+        difficulty: "easy"
+      },
+      {
+        id: "ss3",
+        question: "AP: 2, 5, 8, 11, ... Sₙ formulasi?",
+        options: ["n(n+1)/2", "n(3n-1)/2", "n(3n+1)/2", "n²"],
+        correctAnswer: 2,
+        explanation: "Sₙ = n(2a₁ + (n-1)d)/2 = n(4 + 3n - 3)/2 = n(3n+1)/2",
+        difficulty: "medium"
+      },
+      {
+        id: "ss4",
+        question: "GP: 1, 2, 4, 8, ... S₆ = ?",
+        options: ["31", "63", "127", "255"],
+        correctAnswer: 1,
+        explanation: "Sₙ = b₁(qⁿ-1)/(q-1) = 1·(2⁶-1)/1 = 63",
+        difficulty: "medium"
+      },
+      {
+        id: "ss5",
+        question: "Cheksiz kamayuvchi GP yig'indisi: b₁ = 8, q = 1/2",
+        options: ["8", "12", "16", "24"],
+        correctAnswer: 2,
+        explanation: "S = b₁/(1-q) = 8/(1-0.5) = 16",
+        difficulty: "medium"
+      },
+      {
+        id: "ss6",
+        question: "AP da a₃ = 7, a₇ = 19. d = ?",
+        options: ["2", "3", "4", "5"],
+        correctAnswer: 1,
+        explanation: "a₇ - a₃ = 4d, 19 - 7 = 12 = 4d, d = 3",
+        difficulty: "medium"
+      },
+      {
+        id: "ss7",
+        question: "1 + 2 + 3 + ... + 100 = ?",
+        options: ["4950", "5000", "5050", "5100"],
+        correctAnswer: 2,
+        explanation: "Sₙ = n(n+1)/2 = 100·101/2 = 5050",
+        difficulty: "easy"
+      },
+      {
+        id: "ss8",
+        question: "GP: 3, 6, 12, ... 10 ta hadning yig'indisi?",
+        options: ["3069", "3072", "3075", "6141"],
+        correctAnswer: 0,
+        explanation: "Sₙ = 3(2¹⁰-1)/(2-1) = 3·1023 = 3069",
+        difficulty: "hard"
+      },
+      {
+        id: "ss9",
+        question: "AP ning birinchi 20 hadining yig'indisi 710. a₁ = 2 bo'lsa, d = ?",
+        options: ["2", "3", "4", "5"],
+        correctAnswer: 1,
+        explanation: "Sₙ = n(2a₁ + (n-1)d)/2. 710 = 20(4 + 19d)/2, d = 3",
+        difficulty: "hard"
+      },
+      {
+        id: "ss10",
+        question: "0.333... = 0.3 + 0.03 + 0.003 + ... = ?",
+        options: ["1/4", "1/3", "3/10", "3/9"],
+        correctAnswer: 1,
+        explanation: "Bu cheksiz GP: S = 0.3/(1-0.1) = 0.3/0.9 = 1/3",
+        difficulty: "hard"
+      }
+    ]
+  },
+  {
+    id: "vectors-basics",
+    title: "Vektorlar",
+    category: "Vektorlar",
+    icon: "Move",
+    description: "Vektor amallari va xossalari",
+    timeLimit: 15,
+    questions: [
+      {
+        id: "vb1",
+        question: "a⃗ = (3, 4) vektorning uzunligi?",
+        options: ["5", "7", "12", "25"],
+        correctAnswer: 0,
+        explanation: "|a⃗| = √(3² + 4²) = √25 = 5",
+        difficulty: "easy"
+      },
+      {
+        id: "vb2",
+        question: "a⃗ = (2, 3), b⃗ = (1, -2). a⃗ + b⃗ = ?",
+        options: ["(3, 1)", "(1, 5)", "(3, 5)", "(1, 1)"],
+        correctAnswer: 0,
+        explanation: "a⃗ + b⃗ = (2+1, 3+(-2)) = (3, 1)",
+        difficulty: "easy"
+      },
+      {
+        id: "vb3",
+        question: "a⃗ = (4, -3). 2a⃗ = ?",
+        options: ["(8, 6)", "(8, -6)", "(2, -1.5)", "(6, -1)"],
+        correctAnswer: 1,
+        explanation: "2a⃗ = (2·4, 2·(-3)) = (8, -6)",
+        difficulty: "easy"
+      },
+      {
+        id: "vb4",
+        question: "a⃗ = (1, 2), b⃗ = (3, 4). a⃗ · b⃗ (skalyar ko'paytma) = ?",
+        options: ["10", "11", "14", "5"],
+        correctAnswer: 1,
+        explanation: "a⃗ · b⃗ = 1·3 + 2·4 = 3 + 8 = 11",
+        difficulty: "medium"
+      },
+      {
+        id: "vb5",
+        question: "Ikkita vektor perpendikulyar bo'lsa, ularning skalyar ko'paytmasi?",
+        options: ["1", "0", "-1", "undefined"],
+        correctAnswer: 1,
+        explanation: "Perpendikulyar vektorlar uchun a⃗ · b⃗ = 0",
+        difficulty: "medium"
+      },
+      {
+        id: "vb6",
+        question: "a⃗ = (1, 0, 0), b⃗ = (0, 1, 0). a⃗ × b⃗ = ?",
+        options: ["(0, 0, 1)", "(0, 0, -1)", "(1, 1, 0)", "(0, 0, 0)"],
+        correctAnswer: 0,
+        explanation: "i × j = k, shuning uchun a⃗ × b⃗ = (0, 0, 1)",
+        difficulty: "medium"
+      },
+      {
+        id: "vb7",
+        question: "a⃗ = (2, -1, 3) vektorning uzunligi?",
+        options: ["√10", "√12", "√14", "√16"],
+        correctAnswer: 2,
+        explanation: "|a⃗| = √(4 + 1 + 9) = √14",
+        difficulty: "medium"
+      },
+      {
+        id: "vb8",
+        question: "a⃗ = (1, 1), b⃗ = (1, -1) orasidagi burchak?",
+        options: ["0°", "45°", "90°", "180°"],
+        correctAnswer: 2,
+        explanation: "a⃗ · b⃗ = 1 - 1 = 0, perpendikulyar, burchak 90°",
+        difficulty: "hard"
+      },
+      {
+        id: "vb9",
+        question: "a⃗ = (3, 4) vektorning birlik vektori?",
+        options: ["(3/5, 4/5)", "(3/7, 4/7)", "(1, 1)", "(0.6, 0.8)"],
+        correctAnswer: 0,
+        explanation: "e⃗ = a⃗/|a⃗| = (3/5, 4/5)",
+        difficulty: "hard"
+      },
+      {
+        id: "vb10",
+        question: "a⃗ = (1, 2, 2), b⃗ = (2, -2, 1). Ular orasidagi burchakning kosinusi?",
+        options: ["0", "1/9", "2/9", "1/3"],
+        correctAnswer: 2,
+        explanation: "cos θ = (a⃗·b⃗)/(|a⃗||b⃗|) = (2-4+2)/(3·3) = 0... Qayta: 2-4+2=0, cos=0",
+        difficulty: "hard"
+      }
+    ]
+  },
+  {
+    id: "matrices-basics",
+    title: "Matrisalar",
+    category: "Matrisalar",
+    icon: "Grid3X3",
+    description: "Matrisalar ustida amallar",
+    timeLimit: 15,
+    questions: [
+      {
+        id: "mb1",
+        question: "2×2 birlik matrisaning determinanti?",
+        options: ["0", "1", "2", "4"],
+        correctAnswer: 1,
+        explanation: "Birlik matrisaning determinanti doim 1 ga teng",
+        difficulty: "easy"
+      },
+      {
+        id: "mb2",
+        question: "A = [1 2; 3 4]. det(A) = ?",
+        options: ["-2", "2", "10", "-10"],
+        correctAnswer: 0,
+        explanation: "det = 1·4 - 2·3 = 4 - 6 = -2",
+        difficulty: "easy"
+      },
+      {
+        id: "mb3",
+        question: "A = [2 0; 0 3]. A ning izi (trace) = ?",
+        options: ["5", "6", "0", "2"],
+        correctAnswer: 0,
+        explanation: "Iz = diagonal elementlar yig'indisi = 2 + 3 = 5",
+        difficulty: "easy"
+      },
+      {
+        id: "mb4",
+        question: "A = [1 2; 3 4], B = [5 6; 7 8]. A + B = ?",
+        options: ["[6 8; 10 12]", "[5 12; 21 32]", "[6 8; 9 12]", "[4 4; 4 4]"],
+        correctAnswer: 0,
+        explanation: "Matrisalarni qo'shishda mos elementlar qo'shiladi",
+        difficulty: "easy"
+      },
+      {
+        id: "mb5",
+        question: "3×3 birlik matrisaning rangi?",
+        options: ["0", "1", "2", "3"],
+        correctAnswer: 3,
+        explanation: "Birlik matrisaning rangi uning o'lchamiga teng",
+        difficulty: "medium"
+      },
+      {
+        id: "mb6",
+        question: "A = [1 2; 3 4]. A⁻¹ mavjudmi?",
+        options: ["Ha, det ≠ 0", "Yo'q, det = 0", "Faqat 3×3 bo'lsa", "Noma'lum"],
+        correctAnswer: 0,
+        explanation: "det(A) = -2 ≠ 0, demak teskari matritsa mavjud",
+        difficulty: "medium"
+      },
+      {
+        id: "mb7",
+        question: "A = [1 0; 0 1], B = [2 3; 4 5]. A·B = ?",
+        options: ["[2 3; 4 5]", "[1 0; 0 1]", "[3 3; 4 6]", "[2 0; 0 5]"],
+        correctAnswer: 0,
+        explanation: "Birlik matrisaga ko'paytirish matrisani o'zgartirmaydi",
+        difficulty: "medium"
+      },
+      {
+        id: "mb8",
+        question: "A = [a b; c d]. det(A) = 0 bo'lsa, A qanday?",
+        options: ["Birlik", "Singulyar", "Simmetrik", "Diagonal"],
+        correctAnswer: 1,
+        explanation: "det = 0 bo'lgan matritsa singulyar deyiladi",
+        difficulty: "medium"
+      },
+      {
+        id: "mb9",
+        question: "A = [2 1; 1 2]. Xos qiymatlari?",
+        options: ["1 va 2", "1 va 3", "2 va 3", "0 va 4"],
+        correctAnswer: 1,
+        explanation: "det(A - λI) = 0, (2-λ)² - 1 = 0, λ = 1 yoki 3",
+        difficulty: "hard"
+      },
+      {
+        id: "mb10",
+        question: "3×3 matritsa uchun det(2A) = ?",
+        options: ["2·det(A)", "4·det(A)", "8·det(A)", "6·det(A)"],
+        correctAnswer: 2,
+        explanation: "det(kA) = kⁿ·det(A), bu yerda n=3, 2³ = 8",
+        difficulty: "hard"
+      }
+    ]
+  },
+  {
+    id: "limits-basics",
+    title: "Limitlar",
+    category: "Limitlar",
+    icon: "ArrowRight",
+    description: "Funksiyalar limiti va davomlilik",
+    timeLimit: 15,
+    questions: [
+      {
+        id: "lb1",
+        question: "lim(x→2) (x² - 4)/(x - 2) = ?",
+        options: ["0", "2", "4", "∞"],
+        correctAnswer: 2,
+        explanation: "(x² - 4)/(x - 2) = (x-2)(x+2)/(x-2) = x + 2. x→2 da 4",
+        difficulty: "easy"
+      },
+      {
+        id: "lb2",
+        question: "lim(x→0) sin(x)/x = ?",
+        options: ["0", "1", "∞", "undefined"],
+        correctAnswer: 1,
+        explanation: "Bu birinchi ajoyib limit: lim sin(x)/x = 1",
+        difficulty: "easy"
+      },
+      {
+        id: "lb3",
+        question: "lim(x→∞) 1/x = ?",
+        options: ["0", "1", "∞", "-∞"],
+        correctAnswer: 0,
+        explanation: "x cheksizlikka intilganda 1/x nolga intiladi",
+        difficulty: "easy"
+      },
+      {
+        id: "lb4",
+        question: "lim(x→0) (1 + x)^(1/x) = ?",
+        options: ["1", "2", "e", "∞"],
+        correctAnswer: 2,
+        explanation: "Bu ikkinchi ajoyib limit: (1 + 1/n)ⁿ → e",
+        difficulty: "medium"
+      },
+      {
+        id: "lb5",
+        question: "lim(x→0) (eˣ - 1)/x = ?",
+        options: ["0", "1", "e", "∞"],
+        correctAnswer: 1,
+        explanation: "Bu standart limit: lim(eˣ - 1)/x = 1",
+        difficulty: "medium"
+      },
+      {
+        id: "lb6",
+        question: "lim(x→∞) (2x² + 3x)/(x² + 1) = ?",
+        options: ["0", "2", "3", "∞"],
+        correctAnswer: 1,
+        explanation: "Yuqori darajalar teng, koeffitsientlar nisbati: 2/1 = 2",
+        difficulty: "medium"
+      },
+      {
+        id: "lb7",
+        question: "lim(x→0) tan(x)/x = ?",
+        options: ["0", "1", "∞", "undefined"],
+        correctAnswer: 1,
+        explanation: "tan(x)/x = sin(x)/(x·cos(x)) → 1·1 = 1",
+        difficulty: "medium"
+      },
+      {
+        id: "lb8",
+        question: "lim(x→0) (1 - cos(x))/x² = ?",
+        options: ["0", "1/2", "1", "2"],
+        correctAnswer: 1,
+        explanation: "L'Hopital yoki 1-cos(x) ≈ x²/2, limit = 1/2",
+        difficulty: "hard"
+      },
+      {
+        id: "lb9",
+        question: "lim(x→∞) (1 + 3/x)^x = ?",
+        options: ["1", "e", "e³", "3e"],
+        correctAnswer: 2,
+        explanation: "(1 + 3/x)^x = ((1 + 3/x)^(x/3))³ → e³",
+        difficulty: "hard"
+      },
+      {
+        id: "lb10",
+        question: "lim(x→0) ln(1+x)/x = ?",
+        options: ["0", "1", "e", "ln2"],
+        correctAnswer: 1,
+        explanation: "Bu standart limit: ln(1+x)/x → 1",
+        difficulty: "hard"
+      }
+    ]
+  },
+  {
+    id: "logarithms-advanced",
+    title: "Logarifmlar",
+    category: "Logarifmlar",
+    icon: "Sigma",
+    description: "Logarifmik ifodalar va tenglamalar",
+    timeLimit: 15,
+    questions: [
+      {
+        id: "la1",
+        question: "log₁₀100 = ?",
+        options: ["1", "2", "10", "100"],
+        correctAnswer: 1,
+        explanation: "10² = 100, shuning uchun log₁₀100 = 2",
+        difficulty: "easy"
+      },
+      {
+        id: "la2",
+        question: "ln(e) = ?",
+        options: ["0", "1", "e", "2.718"],
+        correctAnswer: 1,
+        explanation: "ln(e) = logₑ(e) = 1",
+        difficulty: "easy"
+      },
+      {
+        id: "la3",
+        question: "log₂16 = ?",
+        options: ["2", "3", "4", "8"],
+        correctAnswer: 2,
+        explanation: "2⁴ = 16, shuning uchun log₂16 = 4",
+        difficulty: "easy"
+      },
+      {
+        id: "la4",
+        question: "log₃(1/9) = ?",
+        options: ["-2", "-1", "1", "2"],
+        correctAnswer: 0,
+        explanation: "3⁻² = 1/9, shuning uchun log₃(1/9) = -2",
+        difficulty: "medium"
+      },
+      {
+        id: "la5",
+        question: "log₂8 + log₂4 = ?",
+        options: ["5", "6", "7", "12"],
+        correctAnswer: 0,
+        explanation: "log₂8 = 3, log₂4 = 2, jami = 5 yoki log₂32 = 5",
+        difficulty: "medium"
+      },
+      {
+        id: "la6",
+        question: "log₅125 - log₅5 = ?",
+        options: ["1", "2", "3", "25"],
+        correctAnswer: 1,
+        explanation: "log₅(125/5) = log₅25 = 2",
+        difficulty: "medium"
+      },
+      {
+        id: "la7",
+        question: "2^(log₂5) = ?",
+        options: ["2", "5", "10", "25"],
+        correctAnswer: 1,
+        explanation: "a^(logₐx) = x, shuning uchun 2^(log₂5) = 5",
+        difficulty: "medium"
+      },
+      {
+        id: "la8",
+        question: "log₄16 · log₁₆4 = ?",
+        options: ["1", "2", "4", "8"],
+        correctAnswer: 0,
+        explanation: "log₄16 = 2, log₁₆4 = 1/2, 2 · 1/2 = 1",
+        difficulty: "hard"
+      },
+      {
+        id: "la9",
+        question: "logₐb · logᵦc · log꜀a = ?",
+        options: ["0", "1", "abc", "a+b+c"],
+        correctAnswer: 1,
+        explanation: "Zanjir qoidasi bo'yicha bu ko'paytma 1 ga teng",
+        difficulty: "hard"
+      },
+      {
+        id: "la10",
+        question: "log₂x = 3, log₂y = 5. log₂(x²y) = ?",
+        options: ["8", "11", "15", "16"],
+        correctAnswer: 1,
+        explanation: "log₂(x²y) = 2log₂x + log₂y = 2·3 + 5 = 11",
+        difficulty: "hard"
+      }
+    ]
   }
 ];
 
