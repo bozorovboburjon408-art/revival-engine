@@ -1,11 +1,11 @@
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, useCallback } from 'react';
 import { Header } from "@/components/layout/Header";
 import { Footer } from "@/components/layout/Footer";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Play, RotateCcw, Plus, Trash2 } from "lucide-react";
+import { RotateCcw, Plus, Trash2 } from "lucide-react";
 import { toast } from "sonner";
 
 interface FunctionItem {
@@ -18,6 +18,8 @@ const COLORS = ['#f97316', '#22c55e', '#3b82f6', '#a855f7', '#ec4899', '#14b8a6'
 
 const Graphics = () => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
+  const animationRef = useRef<number>(0);
+  const progressRef = useRef(0);
   const [functions, setFunctions] = useState<FunctionItem[]>([
     { id: '1', expression: 'sin(x)', color: COLORS[0] }
   ]);
@@ -25,10 +27,11 @@ const Graphics = () => {
   const [zoom, setZoom] = useState(50);
   const [offset, setOffset] = useState({ x: 0, y: 0 });
   const [isDragging, setIsDragging] = useState(false);
+  const [animationKey, setAnimationKey] = useState(0);
   const lastMouseRef = useRef({ x: 0, y: 0 });
 
   // Parse and evaluate mathematical expression
-  const evaluateExpression = (expr: string, x: number): number | null => {
+  const evaluateExpression = useCallback((expr: string, x: number): number | null => {
     try {
       // Replace math functions
       let parsed = expr
@@ -63,9 +66,15 @@ const Graphics = () => {
     } catch {
       return null;
     }
-  };
+  }, []);
 
-  // Draw graph
+  // Reset animation when functions change
+  useEffect(() => {
+    progressRef.current = 0;
+    setAnimationKey(prev => prev + 1);
+  }, [functions]);
+
+  // Draw graph with animation
   useEffect(() => {
     const canvas = canvasRef.current;
     if (!canvas) return;
@@ -79,117 +88,140 @@ const Graphics = () => {
     const centerY = height / 2 + offset.y;
     const scale = zoom;
 
-    // Clear
-    ctx.fillStyle = 'hsl(222, 47%, 8%)';
-    ctx.fillRect(0, 0, width, height);
+    const drawFrame = () => {
+      // Clear
+      ctx.fillStyle = 'hsl(222, 47%, 8%)';
+      ctx.fillRect(0, 0, width, height);
 
-    // Grid
-    ctx.strokeStyle = 'hsl(222, 47%, 15%)';
-    ctx.lineWidth = 1;
+      // Grid
+      ctx.strokeStyle = 'hsl(222, 47%, 15%)';
+      ctx.lineWidth = 1;
 
-    // Vertical grid lines
-    const gridSpacing = scale;
-    for (let x = centerX % gridSpacing; x < width; x += gridSpacing) {
-      ctx.beginPath();
-      ctx.moveTo(x, 0);
-      ctx.lineTo(x, height);
-      ctx.stroke();
-    }
-
-    // Horizontal grid lines
-    for (let y = centerY % gridSpacing; y < height; y += gridSpacing) {
-      ctx.beginPath();
-      ctx.moveTo(0, y);
-      ctx.lineTo(width, y);
-      ctx.stroke();
-    }
-
-    // Axes
-    ctx.strokeStyle = 'hsl(222, 47%, 40%)';
-    ctx.lineWidth = 2;
-
-    // X axis
-    ctx.beginPath();
-    ctx.moveTo(0, centerY);
-    ctx.lineTo(width, centerY);
-    ctx.stroke();
-
-    // Y axis
-    ctx.beginPath();
-    ctx.moveTo(centerX, 0);
-    ctx.lineTo(centerX, height);
-    ctx.stroke();
-
-    // Axis labels
-    ctx.fillStyle = 'hsl(222, 47%, 60%)';
-    ctx.font = '12px monospace';
-
-    // X axis numbers
-    for (let i = -10; i <= 10; i++) {
-      if (i === 0) continue;
-      const x = centerX + i * scale;
-      if (x > 0 && x < width) {
-        ctx.fillText(i.toString(), x - 5, centerY + 15);
+      const gridSpacing = scale;
+      for (let x = centerX % gridSpacing; x < width; x += gridSpacing) {
+        ctx.beginPath();
+        ctx.moveTo(x, 0);
+        ctx.lineTo(x, height);
+        ctx.stroke();
       }
-    }
 
-    // Y axis numbers
-    for (let i = -10; i <= 10; i++) {
-      if (i === 0) continue;
-      const y = centerY - i * scale;
-      if (y > 0 && y < height) {
-        ctx.fillText(i.toString(), centerX + 5, y + 4);
+      for (let y = centerY % gridSpacing; y < height; y += gridSpacing) {
+        ctx.beginPath();
+        ctx.moveTo(0, y);
+        ctx.lineTo(width, y);
+        ctx.stroke();
       }
-    }
 
-    // Origin
-    ctx.fillText('0', centerX + 5, centerY + 15);
+      // Axes
+      ctx.strokeStyle = 'hsl(222, 47%, 40%)';
+      ctx.lineWidth = 2;
 
-    // Draw functions
-    functions.forEach(func => {
-      if (!func.expression.trim()) return;
-
-      ctx.strokeStyle = func.color;
-      ctx.lineWidth = 2.5;
       ctx.beginPath();
+      ctx.moveTo(0, centerY);
+      ctx.lineTo(width, centerY);
+      ctx.stroke();
 
-      let isFirst = true;
-      let lastY: number | null = null;
+      ctx.beginPath();
+      ctx.moveTo(centerX, 0);
+      ctx.lineTo(centerX, height);
+      ctx.stroke();
 
-      for (let px = 0; px < width; px++) {
-        const x = (px - centerX) / scale;
-        const y = evaluateExpression(func.expression, x);
+      // Axis labels
+      ctx.fillStyle = 'hsl(222, 47%, 60%)';
+      ctx.font = '12px monospace';
 
-        if (y !== null) {
-          const py = centerY - y * scale;
-
-          // Check for discontinuity
-          if (lastY !== null && Math.abs(py - lastY) > height / 2) {
-            ctx.stroke();
-            ctx.beginPath();
-            isFirst = true;
-          }
-
-          if (isFirst) {
-            ctx.moveTo(px, py);
-            isFirst = false;
-          } else {
-            ctx.lineTo(px, py);
-          }
-          lastY = py;
-        } else {
-          if (!isFirst) {
-            ctx.stroke();
-            ctx.beginPath();
-            isFirst = true;
-          }
-          lastY = null;
+      for (let i = -10; i <= 10; i++) {
+        if (i === 0) continue;
+        const x = centerX + i * scale;
+        if (x > 0 && x < width) {
+          ctx.fillText(i.toString(), x - 5, centerY + 15);
         }
       }
-      ctx.stroke();
-    });
 
-  }, [functions, zoom, offset]);
+      for (let i = -10; i <= 10; i++) {
+        if (i === 0) continue;
+        const y = centerY - i * scale;
+        if (y > 0 && y < height) {
+          ctx.fillText(i.toString(), centerX + 5, y + 4);
+        }
+      }
+
+      ctx.fillText('0', centerX + 5, centerY + 15);
+
+      // Calculate animated end position
+      const animatedWidth = Math.min(width, progressRef.current);
+
+      // Draw functions with animation
+      functions.forEach((func, funcIndex) => {
+        if (!func.expression.trim()) return;
+
+        // Stagger animation for each function
+        const funcDelay = funcIndex * 80;
+        const funcProgress = Math.max(0, progressRef.current - funcDelay);
+        const funcWidth = Math.min(width, funcProgress);
+
+        if (funcWidth <= 0) return;
+
+        ctx.strokeStyle = func.color;
+        ctx.lineWidth = 2.5;
+        ctx.lineCap = 'round';
+        ctx.lineJoin = 'round';
+        
+        // Add glow effect
+        ctx.shadowColor = func.color;
+        ctx.shadowBlur = funcWidth < width ? 10 : 0;
+
+        ctx.beginPath();
+
+        let isFirst = true;
+        let lastY: number | null = null;
+
+        for (let px = 0; px < funcWidth; px++) {
+          const x = (px - centerX) / scale;
+          const y = evaluateExpression(func.expression, x);
+
+          if (y !== null) {
+            const py = centerY - y * scale;
+
+            if (lastY !== null && Math.abs(py - lastY) > height / 2) {
+              ctx.stroke();
+              ctx.beginPath();
+              isFirst = true;
+            }
+
+            if (isFirst) {
+              ctx.moveTo(px, py);
+              isFirst = false;
+            } else {
+              ctx.lineTo(px, py);
+            }
+            lastY = py;
+          } else {
+            if (!isFirst) {
+              ctx.stroke();
+              ctx.beginPath();
+              isFirst = true;
+            }
+            lastY = null;
+          }
+        }
+        ctx.stroke();
+        ctx.shadowBlur = 0;
+      });
+
+      // Continue animation
+      if (progressRef.current < width + functions.length * 80) {
+        progressRef.current += 12; // Speed of animation
+        animationRef.current = requestAnimationFrame(drawFrame);
+      }
+    };
+
+    drawFrame();
+
+    return () => {
+      cancelAnimationFrame(animationRef.current);
+    };
+  }, [functions, zoom, offset, animationKey, evaluateExpression]);
 
   const addFunction = () => {
     if (!newExpression.trim()) {
