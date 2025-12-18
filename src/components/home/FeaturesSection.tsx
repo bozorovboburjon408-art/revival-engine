@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import { BookOpen, ClipboardList, LineChart, ArrowRight, Sparkles } from "lucide-react";
+import { BookOpen, FileText, ClipboardList, LineChart, ArrowRight, Sparkles } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 const features = [
@@ -13,13 +13,22 @@ const features = [
     delay: "0s"
   },
   {
+    icon: FileText,
+    title: "Formulalar",
+    description: "174+ matematik formulalar. Algebra, geometriya, trigonometriya va boshqalar.",
+    href: "/formulas",
+    gradient: "from-emerald-400 via-teal-500 to-cyan-600",
+    bgGlow: "bg-emerald-500/20",
+    delay: "0.1s"
+  },
+  {
     icon: ClipboardList,
     title: "Test bo'limi",
     description: "Mavzular bo'yicha testlar. Savollar va avtomatik natijalar.",
     href: "/tests",
     gradient: "from-orange-400 via-amber-500 to-yellow-500",
     bgGlow: "bg-orange-500/20",
-    delay: "0.1s"
+    delay: "0.2s"
   },
   {
     icon: LineChart,
@@ -28,7 +37,7 @@ const features = [
     href: "/graphics",
     gradient: "from-purple-500 via-pink-500 to-rose-500",
     bgGlow: "bg-purple-500/20",
-    delay: "0.2s"
+    delay: "0.3s"
   },
 ];
 
@@ -47,7 +56,7 @@ export const FeaturesSection = () => {
             <span>Asosiy imkoniyatlar</span>
           </div>
           <h2 className="text-4xl md:text-6xl mb-6">
-            Uchta kuchli <span className="gradient-text">bo'lim</span>
+            To'rtta kuchli <span className="gradient-text">bo'lim</span>
           </h2>
           <p className="text-lg md:text-xl text-muted-foreground">
             Matematikani o'rganish uchun zarur bo'lgan barcha vositalar bir joyda
