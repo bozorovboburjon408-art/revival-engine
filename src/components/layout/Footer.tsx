@@ -1,75 +1,159 @@
 import { Link } from "react-router-dom";
-import { BookOpen, Calculator, ClipboardList, LineChart } from "lucide-react";
+import { BookOpen, Calculator, ClipboardList, LineChart, Github, Twitter, Youtube, Mail, Heart, ExternalLink } from "lucide-react";
 
 export const Footer = () => {
   return (
-    <footer className="border-t border-border/40 bg-secondary/30">
-      <div className="container py-12 md:py-16">
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
-          <div className="md:col-span-1">
-            <Link to="/" className="flex items-center gap-2 mb-4">
-              <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-primary to-primary/80 flex items-center justify-center">
-                <span className="text-primary-foreground font-display text-xl">∫</span>
+    <footer className="relative border-t border-border/40 overflow-hidden">
+      {/* Background Effects */}
+      <div className="absolute inset-0 bg-gradient-to-b from-background via-secondary/20 to-secondary/40" />
+      <div className="absolute top-0 left-1/4 w-96 h-96 bg-primary/5 rounded-full blur-3xl" />
+      <div className="absolute bottom-0 right-1/4 w-96 h-96 bg-accent/5 rounded-full blur-3xl" />
+      
+      <div className="container relative py-16 md:py-20">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-10">
+          {/* Brand Section */}
+          <div className="lg:col-span-2">
+            <Link to="/" className="flex items-center gap-3 mb-6 group">
+              <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-primary via-primary/90 to-accent flex items-center justify-center shadow-lg shadow-primary/25 group-hover:shadow-primary/40 transition-shadow">
+                <span className="text-primary-foreground font-display text-2xl">∫</span>
               </div>
-              <span className="font-display text-xl">MathPlatform</span>
+              <span className="font-display text-2xl bg-gradient-to-r from-foreground to-foreground/70 bg-clip-text text-transparent">MathPlatform</span>
             </Link>
-            <p className="text-muted-foreground text-sm">
-              Matematika fanini o'rganish uchun interaktiv platforma. Nazariya, amaliyot va sun'iy intellekt yordamida.
+            <p className="text-muted-foreground leading-relaxed mb-6 max-w-sm">
+              Matematika fanini o'rganish uchun interaktiv platforma. Nazariya, amaliyot va sun'iy intellekt yordamida bilimlaringizni oshiring.
             </p>
+            
+            {/* Social Links */}
+            <div className="flex items-center gap-3">
+              <a href="#" className="w-10 h-10 rounded-xl bg-card/50 backdrop-blur-sm border border-border/50 flex items-center justify-center text-muted-foreground hover:text-primary hover:border-primary/50 hover:bg-primary/5 transition-all duration-300 hover:-translate-y-1">
+                <Github className="w-5 h-5" />
+              </a>
+              <a href="#" className="w-10 h-10 rounded-xl bg-card/50 backdrop-blur-sm border border-border/50 flex items-center justify-center text-muted-foreground hover:text-primary hover:border-primary/50 hover:bg-primary/5 transition-all duration-300 hover:-translate-y-1">
+                <Twitter className="w-5 h-5" />
+              </a>
+              <a href="#" className="w-10 h-10 rounded-xl bg-card/50 backdrop-blur-sm border border-border/50 flex items-center justify-center text-muted-foreground hover:text-primary hover:border-primary/50 hover:bg-primary/5 transition-all duration-300 hover:-translate-y-1">
+                <Youtube className="w-5 h-5" />
+              </a>
+              <a href="#" className="w-10 h-10 rounded-xl bg-card/50 backdrop-blur-sm border border-border/50 flex items-center justify-center text-muted-foreground hover:text-primary hover:border-primary/50 hover:bg-primary/5 transition-all duration-300 hover:-translate-y-1">
+                <Mail className="w-5 h-5" />
+              </a>
+            </div>
           </div>
 
+          {/* Bo'limlar */}
           <div>
-            <h4 className="font-semibold mb-4">Bo'limlar</h4>
-            <ul className="space-y-2 text-sm text-muted-foreground">
+            <h4 className="font-display font-semibold text-lg mb-5 flex items-center gap-2">
+              <div className="w-1.5 h-1.5 rounded-full bg-primary" />
+              Bo'limlar
+            </h4>
+            <ul className="space-y-3">
               <li>
-                <Link to="/library" className="hover:text-foreground transition-colors inline-flex items-center gap-2">
-                  <BookOpen className="w-4 h-4" />
+                <Link to="/library" className="text-muted-foreground hover:text-foreground transition-colors inline-flex items-center gap-2.5 group">
+                  <BookOpen className="w-4 h-4 text-primary/60 group-hover:text-primary transition-colors" />
                   Kutubxona
                 </Link>
               </li>
               <li>
-                <Link to="/calculator" className="hover:text-foreground transition-colors inline-flex items-center gap-2">
-                  <Calculator className="w-4 h-4" />
+                <Link to="/calculator" className="text-muted-foreground hover:text-foreground transition-colors inline-flex items-center gap-2.5 group">
+                  <Calculator className="w-4 h-4 text-primary/60 group-hover:text-primary transition-colors" />
                   AI Kalkulyator
                 </Link>
               </li>
               <li>
-                <Link to="/tests" className="hover:text-foreground transition-colors inline-flex items-center gap-2">
-                  <ClipboardList className="w-4 h-4" />
+                <Link to="/tests" className="text-muted-foreground hover:text-foreground transition-colors inline-flex items-center gap-2.5 group">
+                  <ClipboardList className="w-4 h-4 text-primary/60 group-hover:text-primary transition-colors" />
                   Testlar
                 </Link>
               </li>
               <li>
-                <Link to="/graphics" className="hover:text-foreground transition-colors inline-flex items-center gap-2">
-                  <LineChart className="w-4 h-4" />
+                <Link to="/graphics" className="text-muted-foreground hover:text-foreground transition-colors inline-flex items-center gap-2.5 group">
+                  <LineChart className="w-4 h-4 text-primary/60 group-hover:text-primary transition-colors" />
                   Grafika
                 </Link>
               </li>
             </ul>
           </div>
 
+          {/* Mavzular */}
           <div>
-            <h4 className="font-semibold mb-4">Mavzular</h4>
-            <ul className="space-y-2 text-sm text-muted-foreground">
-              <li><Link to="/library/M1" className="hover:text-foreground transition-colors">Hosilalar</Link></li>
-              <li><Link to="/library/M3" className="hover:text-foreground transition-colors">Integrallar</Link></li>
-              <li><Link to="/library/M9" className="hover:text-foreground transition-colors">Differensial tenglamalar</Link></li>
-              <li><Link to="/library/M13" className="hover:text-foreground transition-colors">Qatorlar</Link></li>
+            <h4 className="font-display font-semibold text-lg mb-5 flex items-center gap-2">
+              <div className="w-1.5 h-1.5 rounded-full bg-accent" />
+              Mavzular
+            </h4>
+            <ul className="space-y-3">
+              <li>
+                <Link to="/library/M1" className="text-muted-foreground hover:text-foreground transition-colors inline-flex items-center gap-2">
+                  <span className="text-xs text-primary/60">→</span>
+                  Hosilalar
+                </Link>
+              </li>
+              <li>
+                <Link to="/library/M3" className="text-muted-foreground hover:text-foreground transition-colors inline-flex items-center gap-2">
+                  <span className="text-xs text-primary/60">→</span>
+                  Integrallar
+                </Link>
+              </li>
+              <li>
+                <Link to="/library/M9" className="text-muted-foreground hover:text-foreground transition-colors inline-flex items-center gap-2">
+                  <span className="text-xs text-primary/60">→</span>
+                  Differensial tenglamalar
+                </Link>
+              </li>
+              <li>
+                <Link to="/library/M13" className="text-muted-foreground hover:text-foreground transition-colors inline-flex items-center gap-2">
+                  <span className="text-xs text-primary/60">→</span>
+                  Qatorlar
+                </Link>
+              </li>
             </ul>
           </div>
 
+          {/* Qo'shimcha */}
           <div>
-            <h4 className="font-semibold mb-4">Qo'shimcha</h4>
-            <ul className="space-y-2 text-sm text-muted-foreground">
-              <li><Link to="/admin/login" className="hover:text-foreground transition-colors">Admin panel</Link></li>
-              <li><a href="#" className="hover:text-foreground transition-colors">Yordam</a></li>
-              <li><a href="#" className="hover:text-foreground transition-colors">Aloqa</a></li>
+            <h4 className="font-display font-semibold text-lg mb-5 flex items-center gap-2">
+              <div className="w-1.5 h-1.5 rounded-full bg-primary" />
+              Qo'shimcha
+            </h4>
+            <ul className="space-y-3">
+              <li>
+                <Link to="/formulas" className="text-muted-foreground hover:text-foreground transition-colors inline-flex items-center gap-2">
+                  <ExternalLink className="w-3.5 h-3.5" />
+                  Formulalar
+                </Link>
+              </li>
+              <li>
+                <Link to="/admin/login" className="text-muted-foreground hover:text-foreground transition-colors inline-flex items-center gap-2">
+                  <ExternalLink className="w-3.5 h-3.5" />
+                  Admin panel
+                </Link>
+              </li>
+              <li>
+                <a href="#" className="text-muted-foreground hover:text-foreground transition-colors inline-flex items-center gap-2">
+                  <ExternalLink className="w-3.5 h-3.5" />
+                  Yordam
+                </a>
+              </li>
+              <li>
+                <a href="#" className="text-muted-foreground hover:text-foreground transition-colors inline-flex items-center gap-2">
+                  <ExternalLink className="w-3.5 h-3.5" />
+                  Aloqa
+                </a>
+              </li>
             </ul>
           </div>
         </div>
 
-        <div className="border-t border-border/40 mt-8 pt-8 text-center text-sm text-muted-foreground">
-          <p>© 2024 MathPlatform. Barcha huquqlar himoyalangan.</p>
+        {/* Bottom Section */}
+        <div className="border-t border-border/40 mt-12 pt-8">
+          <div className="flex flex-col md:flex-row items-center justify-between gap-4">
+            <p className="text-sm text-muted-foreground flex items-center gap-1.5">
+              © 2024 MathPlatform. Barcha huquqlar himoyalangan.
+            </p>
+            <p className="text-sm text-muted-foreground flex items-center gap-1.5">
+              <Heart className="w-4 h-4 text-red-500 fill-red-500" />
+              bilan yaratilgan
+            </p>
+          </div>
         </div>
       </div>
     </footer>
