@@ -75,8 +75,8 @@ export const HeroSection = () => {
           <div className="grid grid-cols-3 gap-6 max-w-2xl mx-auto mt-20 animate-slide-up" style={{ animationDelay: "0.3s" }}>
             {[
               { value: "18+", label: "Mavzular", icon: "📚" },
+              { value: "174+", label: "Formulalar", icon: "📐" },
               { value: "∞", label: "Misollar", icon: "🔢" },
-              { value: "AI", label: "Yechimlar", icon: "🤖" },
             ].map((stat, i) => (
               <div 
                 key={stat.label} 
