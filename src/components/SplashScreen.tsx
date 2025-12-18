@@ -136,25 +136,6 @@ export const SplashScreen = ({ onComplete }: { onComplete: () => void }) => {
         ))}
       </div>
 
-      {/* Floating particles */}
-      <div className="absolute inset-0 pointer-events-none">
-        {Array.from({ length: 30 }).map((_, i) => (
-          <div
-            key={i}
-            className="absolute rounded-full animate-particle"
-            style={{
-              left: `${Math.random() * 100}%`,
-              top: `${Math.random() * 100}%`,
-              width: `${2 + Math.random() * 4}px`,
-              height: `${2 + Math.random() * 4}px`,
-              background: neonColors[i % neonColors.length],
-              boxShadow: `0 0 10px ${neonColors[i % neonColors.length]}`,
-              animationDelay: `${Math.random() * 5}s`,
-              animationDuration: `${4 + Math.random() * 4}s`,
-            }}
-          />
-        ))}
-      </div>
 
       {/* Orbiting elements */}
       <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2">
