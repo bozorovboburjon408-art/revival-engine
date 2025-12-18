@@ -1,14 +1,25 @@
-import { useState } from 'react';
+import { useState, Suspense, lazy } from 'react';
 import { Header } from "@/components/layout/Header";
 import { Footer } from "@/components/layout/Footer";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Input } from "@/components/ui/input";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Graph2D } from "@/components/graphics/Graph2D";
-import { Scene3D } from "@/components/graphics/Scene3D";
 import { VisualizationCard } from "@/components/graphics/VisualizationCard";
 import { visualizations2D, visualizations3D, Visualization2D, Visualization3D } from "@/lib/visualizations";
-import { Search, LineChart, Box, MousePointer2, Move, ZoomIn } from "lucide-react";
+import { Search, LineChart, Box, MousePointer2, Move, ZoomIn, Loader2 } from "lucide-react";
+
+// Lazy load 3D component to avoid breaking the app if there are issues
+const Scene3D = lazy(() => import("@/components/graphics/Scene3D").then(mod => ({ default: mod.Scene3D })));
+
+const Scene3DFallback = () => (
+  <div className="h-[400px] rounded-lg border border-border bg-slate-900 flex items-center justify-center">
+    <div className="text-center">
+      <Loader2 className="h-8 w-8 animate-spin mx-auto mb-2 text-primary" />
+      <p className="text-muted-foreground">3D muhit yuklanmoqda...</p>
+    </div>
+  </div>
+);
 
 const Graphics = () => {
   const [activeTab, setActiveTab] = useState<'2d' | '3d'>('2d');
@@ -134,7 +145,9 @@ const Graphics = () => {
                     <h2 className="text-xl font-semibold">{selected3D.name}</h2>
                     <p className="text-muted-foreground font-mono">{selected3D.description}</p>
                   </div>
-                  <Scene3D visualization={selected3D} />
+                  <Suspense fallback={<Scene3DFallback />}>
+                    <Scene3D visualization={selected3D} />
+                  </Suspense>
                 </div>
               </TabsContent>
             </div>
