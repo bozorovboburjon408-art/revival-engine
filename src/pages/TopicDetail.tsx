@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import { ArrowLeft, BookOpen } from "lucide-react";
 import ReactMarkdown from "react-markdown";
 import remarkMath from "remark-math";
+import remarkGfm from "remark-gfm";
 import rehypeKatex from "rehype-katex";
 import "katex/dist/katex.min.css";
 
@@ -62,7 +63,7 @@ const TopicDetail = () => {
               <div className="glass-card rounded-2xl p-8 md:p-12">
                 <article className="prose prose-lg max-w-none dark:prose-invert prose-headings:font-display prose-headings:text-foreground prose-p:text-muted-foreground prose-strong:text-foreground prose-table:text-sm prose-th:bg-secondary/50 prose-th:p-3 prose-td:p-3 prose-td:border prose-th:border prose-table:border-collapse">
                   <ReactMarkdown
-                    remarkPlugins={[remarkMath]}
+                    remarkPlugins={[remarkGfm, remarkMath]}
                     rehypePlugins={[rehypeKatex]}
                   >
                     {topic.content}
