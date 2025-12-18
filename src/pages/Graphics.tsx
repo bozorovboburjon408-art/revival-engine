@@ -126,22 +126,30 @@ const Graphics = () => {
       ctx.lineTo(centerX, height);
       ctx.stroke();
 
-      // Axis labels
+      // Axis labels - dynamic based on visible range
       ctx.fillStyle = 'hsl(222, 47%, 60%)';
       ctx.font = '12px monospace';
 
-      for (let i = -10; i <= 10; i++) {
+      // Calculate visible range
+      const minX = Math.floor(-centerX / scale);
+      const maxX = Math.ceil((width - centerX) / scale);
+      const minY = Math.floor(-(height - centerY) / scale);
+      const maxY = Math.ceil(centerY / scale);
+
+      // X axis numbers
+      for (let i = minX; i <= maxX; i++) {
         if (i === 0) continue;
         const x = centerX + i * scale;
-        if (x > 0 && x < width) {
+        if (x > 20 && x < width - 20) {
           ctx.fillText(i.toString(), x - 5, centerY + 15);
         }
       }
 
-      for (let i = -10; i <= 10; i++) {
+      // Y axis numbers
+      for (let i = minY; i <= maxY; i++) {
         if (i === 0) continue;
         const y = centerY - i * scale;
-        if (y > 0 && y < height) {
+        if (y > 15 && y < height - 15) {
           ctx.fillText(i.toString(), centerX + 5, y + 4);
         }
       }
