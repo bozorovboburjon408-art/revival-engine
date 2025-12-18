@@ -31,8 +31,10 @@ const COLORS = ['#f97316', '#22c55e', '#3b82f6', '#a855f7', '#ec4899', '#14b8a6'
 
 const Graphics = () => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
+  const containerRef = useRef<HTMLDivElement>(null);
   const animationRef = useRef<number>(0);
   const progressRef = useRef(0);
+  const [canvasSize, setCanvasSize] = useState({ width: 800, height: 500 });
   const [functions, setFunctions] = useState<FunctionItem[]>([
     { id: '1', expression: 'sin(x)', color: COLORS[0] }
   ]);
@@ -51,6 +53,22 @@ const Graphics = () => {
   const [manualX, setManualX] = useState<string>('');
   const [manualXPoint, setManualXPoint] = useState<number | null>(null);
   const lastMouseRef = useRef({ x: 0, y: 0 });
+
+  // Handle canvas resize
+  useEffect(() => {
+    const updateSize = () => {
+      if (containerRef.current) {
+        const rect = containerRef.current.getBoundingClientRect();
+        const newWidth = Math.floor(rect.width - 32) || 800;
+        const newHeight = Math.max(400, Math.floor(newWidth * 0.6));
+        setCanvasSize({ width: newWidth, height: newHeight });
+      }
+    };
+
+    updateSize();
+    window.addEventListener('resize', updateSize);
+    return () => window.removeEventListener('resize', updateSize);
+  }, []);
 
   // Parse and evaluate mathematical expression
   const evaluateExpression = useCallback((expr: string, x: number): number | null => {
@@ -218,11 +236,11 @@ const Graphics = () => {
     }
   }, [showIntegral, integralBounds, functions, calculateIntegral]);
 
-  // Reset animation when functions change
+  // Reset animation when functions or canvas size change
   useEffect(() => {
     progressRef.current = 0;
     setAnimationKey(prev => prev + 1);
-  }, [functions]);
+  }, [functions, canvasSize]);
 
   // Draw graph with animation
   useEffect(() => {
@@ -232,8 +250,8 @@ const Graphics = () => {
     const ctx = canvas.getContext('2d');
     if (!ctx) return;
 
-    const width = canvas.width;
-    const height = canvas.height;
+    const width = canvasSize.width;
+    const height = canvasSize.height;
     const centerX = width / 2 + offset.x;
     const centerY = height / 2 + offset.y;
     const scale = zoom;
@@ -548,7 +566,7 @@ const Graphics = () => {
     return () => {
       cancelAnimationFrame(animationRef.current);
     };
-  }, [functions, zoom, offset, animationKey, evaluateExpression, cursorPos, isDragging, roots, intersections, showIntegral, integralBounds, manualXPoint]);
+  }, [functions, zoom, offset, animationKey, evaluateExpression, cursorPos, isDragging, roots, intersections, showIntegral, integralBounds, manualXPoint, canvasSize]);
 
   const addFunction = () => {
     if (!newExpression.trim()) {
@@ -597,14 +615,14 @@ const Graphics = () => {
     if (!canvas) return;
 
     const rect = canvas.getBoundingClientRect();
-    const scaleX = canvas.width / rect.width;
-    const scaleY = canvas.height / rect.height;
+    const scaleX = canvasSize.width / rect.width;
+    const scaleY = canvasSize.height / rect.height;
     
     const px = (e.clientX - rect.left) * scaleX;
     const py = (e.clientY - rect.top) * scaleY;
     
-    const centerX = canvas.width / 2 + offset.x;
-    const centerY = canvas.height / 2 + offset.y;
+    const centerX = canvasSize.width / 2 + offset.x;
+    const centerY = canvasSize.height / 2 + offset.y;
     
     const x = (px - centerX) / zoom;
     const y = (centerY - py) / zoom;
@@ -961,14 +979,15 @@ const Graphics = () => {
           </div>
 
           {/* Graph Canvas */}
-          <div className="lg:col-span-2">
+          <div className="lg:col-span-2" ref={containerRef}>
             <Card>
               <CardContent className="p-4">
                 <canvas
                   ref={canvasRef}
-                  width={700}
-                  height={500}
-                  className="w-full rounded-lg cursor-crosshair"
+                  width={canvasSize.width}
+                  height={canvasSize.height}
+                  className="w-full rounded-lg cursor-crosshair bg-background"
+                  style={{ maxHeight: '70vh' }}
                   onMouseDown={handleMouseDown}
                   onMouseMove={handleMouseMove}
                   onMouseUp={() => setIsDragging(false)}
