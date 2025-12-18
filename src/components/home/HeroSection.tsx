@@ -33,7 +33,7 @@ export const HeroSection = () => {
             <div className="flex items-center justify-center w-6 h-6 rounded-full bg-primary/20">
               <Sparkles className="w-3.5 h-3.5 text-primary" />
             </div>
-            <span className="gradient-text font-semibold">AI-powered matematika platformasi</span>
+            <span className="gradient-text font-semibold">Interaktiv matematika platformasi</span>
           </div>
 
           {/* Main Title */}
