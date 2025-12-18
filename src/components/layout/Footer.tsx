@@ -1,5 +1,5 @@
 import { Link, useLocation } from "react-router-dom";
-import { BookOpen, Calculator, ClipboardList, LineChart, Github, Twitter, Youtube, Mail, Heart, ExternalLink } from "lucide-react";
+import { BookOpen, Calculator, ClipboardList, LineChart, Github, Youtube, Mail, Heart, ExternalLink, Send } from "lucide-react";
 
 export const Footer = () => {
   const location = useLocation();
@@ -50,16 +50,16 @@ export const Footer = () => {
             
             {/* Social Links */}
             <div className="flex items-center gap-3">
-              <a href="#" className="w-10 h-10 rounded-xl bg-card/50 backdrop-blur-sm border border-border/50 flex items-center justify-center text-muted-foreground hover:text-primary hover:border-primary/50 hover:bg-primary/5 transition-all duration-300 hover:-translate-y-1">
+              <a href="https://github.com/bozorovboburjon408-art" target="_blank" rel="noopener noreferrer" className="w-10 h-10 rounded-xl bg-card/50 backdrop-blur-sm border border-border/50 flex items-center justify-center text-muted-foreground hover:text-primary hover:border-primary/50 hover:bg-primary/5 transition-all duration-300 hover:-translate-y-1">
                 <Github className="w-5 h-5" />
               </a>
-              <a href="#" className="w-10 h-10 rounded-xl bg-card/50 backdrop-blur-sm border border-border/50 flex items-center justify-center text-muted-foreground hover:text-primary hover:border-primary/50 hover:bg-primary/5 transition-all duration-300 hover:-translate-y-1">
-                <Twitter className="w-5 h-5" />
+              <a href="https://t.me/Boburjon2108" target="_blank" rel="noopener noreferrer" className="w-10 h-10 rounded-xl bg-card/50 backdrop-blur-sm border border-border/50 flex items-center justify-center text-muted-foreground hover:text-primary hover:border-primary/50 hover:bg-primary/5 transition-all duration-300 hover:-translate-y-1">
+                <Send className="w-5 h-5" />
               </a>
-              <a href="#" className="w-10 h-10 rounded-xl bg-card/50 backdrop-blur-sm border border-border/50 flex items-center justify-center text-muted-foreground hover:text-primary hover:border-primary/50 hover:bg-primary/5 transition-all duration-300 hover:-translate-y-1">
+              <a href="https://youtube.com" target="_blank" rel="noopener noreferrer" className="w-10 h-10 rounded-xl bg-card/50 backdrop-blur-sm border border-border/50 flex items-center justify-center text-muted-foreground hover:text-primary hover:border-primary/50 hover:bg-primary/5 transition-all duration-300 hover:-translate-y-1">
                 <Youtube className="w-5 h-5" />
               </a>
-              <a href="#" className="w-10 h-10 rounded-xl bg-card/50 backdrop-blur-sm border border-border/50 flex items-center justify-center text-muted-foreground hover:text-primary hover:border-primary/50 hover:bg-primary/5 transition-all duration-300 hover:-translate-y-1">
+              <a href="mailto:bozorovboburjon408@gmail.com" className="w-10 h-10 rounded-xl bg-card/50 backdrop-blur-sm border border-border/50 flex items-center justify-center text-muted-foreground hover:text-primary hover:border-primary/50 hover:bg-primary/5 transition-all duration-300 hover:-translate-y-1">
                 <Mail className="w-5 h-5" />
               </a>
             </div>
