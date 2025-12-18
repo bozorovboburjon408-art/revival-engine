@@ -1,5 +1,5 @@
 import { Link, useLocation } from "react-router-dom";
-import { BookOpen, Calculator, ClipboardList, LineChart, Github, Youtube, Mail, Heart, ExternalLink, Send } from "lucide-react";
+import { BookOpen, Calculator, ClipboardList, LineChart, Github, Mail, Heart, ExternalLink, Send } from "lucide-react";
 
 export const Footer = () => {
   const location = useLocation();
@@ -55,9 +55,6 @@ export const Footer = () => {
               </a>
               <a href="https://t.me/Boburjon2108" target="_blank" rel="noopener noreferrer" className="w-10 h-10 rounded-xl bg-card/50 backdrop-blur-sm border border-border/50 flex items-center justify-center text-muted-foreground hover:text-primary hover:border-primary/50 hover:bg-primary/5 transition-all duration-300 hover:-translate-y-1">
                 <Send className="w-5 h-5" />
-              </a>
-              <a href="https://youtube.com" target="_blank" rel="noopener noreferrer" className="w-10 h-10 rounded-xl bg-card/50 backdrop-blur-sm border border-border/50 flex items-center justify-center text-muted-foreground hover:text-primary hover:border-primary/50 hover:bg-primary/5 transition-all duration-300 hover:-translate-y-1">
-                <Youtube className="w-5 h-5" />
               </a>
               <a href="mailto:bozorovboburjon408@gmail.com" className="w-10 h-10 rounded-xl bg-card/50 backdrop-blur-sm border border-border/50 flex items-center justify-center text-muted-foreground hover:text-primary hover:border-primary/50 hover:bg-primary/5 transition-all duration-300 hover:-translate-y-1">
                 <Mail className="w-5 h-5" />
