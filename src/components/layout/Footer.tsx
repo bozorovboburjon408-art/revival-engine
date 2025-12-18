@@ -1,5 +1,5 @@
 import { Link, useLocation } from "react-router-dom";
-import { BookOpen, ClipboardList, LineChart, Github, Mail, ExternalLink, Send } from "lucide-react";
+import { BookOpen, FileText, ClipboardList, LineChart, Github, Mail, ExternalLink, Send } from "lucide-react";
 export const Footer = () => {
   const location = useLocation();
   const isHomePage = location.pathname === "/";
@@ -75,6 +75,12 @@ export const Footer = () => {
                 </Link>
               </li>
               <li>
+                <Link to="/formulas" className="text-muted-foreground hover:text-foreground transition-colors inline-flex items-center gap-2.5 group">
+                  <FileText className="w-4 h-4 text-primary/60 group-hover:text-primary transition-colors" />
+                  Formulalar
+                </Link>
+              </li>
+              <li>
                 <Link to="/tests" className="text-muted-foreground hover:text-foreground transition-colors inline-flex items-center gap-2.5 group">
                   <ClipboardList className="w-4 h-4 text-primary/60 group-hover:text-primary transition-colors" />
                   Testlar
@@ -130,12 +136,6 @@ export const Footer = () => {
               Qo'shimcha
             </h4>
             <ul className="space-y-3">
-              <li>
-                <Link to="/formulas" className="text-muted-foreground hover:text-foreground transition-colors inline-flex items-center gap-2">
-                  <ExternalLink className="w-3.5 h-3.5" />
-                  Formulalar
-                </Link>
-              </li>
               <li>
                 <Link to="/admin/login" className="text-muted-foreground hover:text-foreground transition-colors inline-flex items-center gap-2">
                   <ExternalLink className="w-3.5 h-3.5" />
