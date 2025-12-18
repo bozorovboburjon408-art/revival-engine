@@ -406,41 +406,57 @@ export const Scene3D = ({ visualization }: Scene3DProps) => {
         transformedNormal = rotateY(transformedNormal, rotation.y);
         transformedNormal = rotateZ(transformedNormal, rotation.z);
         
-        let transformedCenter = rotateX(face.center, rotation.x);
-        transformedCenter = rotateY(transformedCenter, rotation.y);
-        transformedCenter = rotateZ(transformedCenter, rotation.z);
+        // Calculate center from transformed vertices for accurate depth
+        const transformedCenter = {
+          x: (transformedVertices[0].x + transformedVertices[1].x + transformedVertices[2].x + transformedVertices[3].x) / 4,
+          y: (transformedVertices[0].y + transformedVertices[1].y + transformedVertices[2].y + transformedVertices[3].y) / 4,
+          z: (transformedVertices[0].z + transformedVertices[1].z + transformedVertices[2].z + transformedVertices[3].z) / 4
+        };
+        
+        // Max Z for better sorting
+        const maxZ = Math.max(
+          transformedVertices[0].z,
+          transformedVertices[1].z,
+          transformedVertices[2].z,
+          transformedVertices[3].z
+        );
         
         return {
           vertices: transformedVertices,
           normal: transformedNormal,
-          center: transformedCenter
+          center: transformedCenter,
+          maxZ
         };
       });
 
-      // Sort by depth (painter's algorithm)
-      transformedFaces.sort((a, b) => a.center.z - b.center.z);
+      // Sort by max depth (painter's algorithm - draw far faces first)
+      transformedFaces.sort((a, b) => a.maxZ - b.maxZ);
 
       // Draw faces
       transformedFaces.forEach(face => {
-        // Back-face culling
-        const viewDir = normalize(face.center);
-        if (dot(face.normal, viewDir) > 0.1) return;
+        // Recalculate normal from transformed vertices
+        const v1 = subtract(face.vertices[1], face.vertices[0]);
+        const v2 = subtract(face.vertices[3], face.vertices[0]);
+        const faceNormal = normalize(crossProduct(v1, v2));
+        
+        // Back-face culling - check if face is pointing away from camera
+        if (faceNormal.z > 0) return;
         
         // Calculate lighting
-        let brightness = dot(face.normal, lightDir);
-        brightness = Math.max(0.2, Math.min(1, brightness * 0.5 + 0.5));
+        let brightness = -dot(faceNormal, lightDir);
+        brightness = Math.max(0.25, Math.min(1, brightness * 0.6 + 0.4));
         
         // Project vertices
         const projected = face.vertices.map(v => project(v, width, height, fov));
         
-        // Color based on depth and height
-        const hue = 45 + (face.center.y / 150) * 20;
-        const saturation = 85;
-        const lightness = 35 + brightness * 35;
+        // Color based on height
+        const hue = 40 + (face.center.y / 150) * 25;
+        const saturation = 80;
+        const lightness = 30 + brightness * 40;
         
         ctx.fillStyle = `hsl(${hue}, ${saturation}%, ${lightness}%)`;
-        ctx.strokeStyle = `hsl(${hue}, ${saturation}%, ${lightness - 10}%)`;
-        ctx.lineWidth = 0.5;
+        ctx.strokeStyle = `hsl(${hue}, ${saturation}%, ${Math.max(15, lightness - 15)}%)`;
+        ctx.lineWidth = 0.3;
         
         ctx.beginPath();
         ctx.moveTo(projected[0].x, projected[0].y);
