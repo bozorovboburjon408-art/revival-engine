@@ -4,6 +4,10 @@ import { Footer } from "@/components/layout/Footer";
 import { getTopicById } from "@/lib/mathTopics";
 import { Button } from "@/components/ui/button";
 import { ArrowLeft, BookOpen } from "lucide-react";
+import ReactMarkdown from "react-markdown";
+import remarkMath from "remark-math";
+import rehypeKatex from "rehype-katex";
+import "katex/dist/katex.min.css";
 
 const TopicDetail = () => {
   const { topicId } = useParams<{ topicId: string }>();
@@ -56,7 +60,14 @@ const TopicDetail = () => {
           <div className="container px-4">
             <div className="max-w-4xl mx-auto">
               <div className="glass-card rounded-2xl p-8 md:p-12">
-                <div className="prose prose-lg max-w-none">{topic.content}</div>
+                <article className="prose prose-lg max-w-none dark:prose-invert prose-headings:font-display prose-headings:text-foreground prose-p:text-muted-foreground prose-strong:text-foreground prose-table:text-sm prose-th:bg-secondary/50 prose-th:p-3 prose-td:p-3 prose-td:border prose-th:border prose-table:border-collapse">
+                  <ReactMarkdown
+                    remarkPlugins={[remarkMath]}
+                    rehypePlugins={[rehypeKatex]}
+                  >
+                    {topic.content}
+                  </ReactMarkdown>
+                </article>
               </div>
               <div className="mt-8">
                 <Link to="/library"><Button variant="outline" className="gap-2"><ArrowLeft className="w-4 h-4" />Kutubxonaga qaytish</Button></Link>
