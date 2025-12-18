@@ -1,5 +1,5 @@
 import { Link, useLocation } from "react-router-dom";
-import { BookOpen, Calculator, ClipboardList, LineChart, Github, Mail, Heart, ExternalLink, Send } from "lucide-react";
+import { BookOpen, Calculator, ClipboardList, LineChart, Github, Mail, ExternalLink, Send } from "lucide-react";
 
 export const Footer = () => {
   const location = useLocation();
@@ -18,7 +18,7 @@ export const Footer = () => {
               <span className="font-display text-lg">MathPlatform</span>
             </Link>
             <p className="text-sm text-muted-foreground">
-              © 2024 MathPlatform. Barcha huquqlar himoyalangan.
+              © 2025 MathPlatform. Barcha huquqlar himoyalangan.
             </p>
           </div>
         </div>
@@ -167,13 +167,9 @@ export const Footer = () => {
 
         {/* Bottom Section */}
         <div className="border-t border-border/40 mt-12 pt-8">
-          <div className="flex flex-col md:flex-row items-center justify-between gap-4">
-            <p className="text-sm text-muted-foreground flex items-center gap-1.5">
-              © 2024 MathPlatform. Barcha huquqlar himoyalangan.
-            </p>
-            <p className="text-sm text-muted-foreground flex items-center gap-1.5">
-              <Heart className="w-4 h-4 text-red-500 fill-red-500" />
-              bilan yaratilgan
+          <div className="flex flex-col md:flex-row items-center justify-center gap-4">
+            <p className="text-sm text-muted-foreground">
+              © 2025 MathPlatform. Barcha huquqlar himoyalangan.
             </p>
           </div>
         </div>
