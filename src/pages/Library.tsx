@@ -3,6 +3,7 @@ import { Header } from "@/components/layout/Header";
 import { Footer } from "@/components/layout/Footer";
 import { mathTopics } from "@/lib/mathTopics";
 import { BookOpen, ChevronRight } from "lucide-react";
+import { TopicVisualization } from "@/components/library/TopicVisualization";
 
 const Library = () => {
   return (
@@ -32,17 +33,24 @@ const Library = () => {
               {mathTopics.map((topic) => (
                 <Link key={topic.id} to={`/library/${topic.id}`} className="group">
                   <div className="glass-card rounded-xl p-6 h-full hover-lift">
-                    <div className="flex items-start justify-between gap-4">
-                      <div className="flex items-start gap-4 min-w-0">
-                        <div className="w-14 h-14 rounded-lg bg-gradient-to-br from-primary to-primary/80 flex items-center justify-center flex-shrink-0">
-                          <span className="font-display text-lg text-primary-foreground">{topic.id}</span>
-                        </div>
-                        <div className="min-w-0 flex-1">
-                          <h3 className="font-semibold text-lg mb-2 group-hover:text-primary transition-colors">{topic.title}</h3>
-                          <p className="text-sm text-muted-foreground line-clamp-3">{topic.description}</p>
-                        </div>
+                    <div className="flex flex-col gap-4">
+                      {/* Animatsiyali vizualizatsiya */}
+                      <div className="w-full h-20 rounded-lg overflow-hidden bg-background/50 border border-border/30">
+                        <TopicVisualization topicId={topic.id} />
                       </div>
-                      <ChevronRight className="w-5 h-5 text-muted-foreground group-hover:text-primary transition-all flex-shrink-0 mt-4" />
+                      
+                      <div className="flex items-start justify-between gap-3">
+                        <div className="flex items-start gap-3 min-w-0">
+                          <div className="w-12 h-12 rounded-lg bg-gradient-to-br from-primary to-primary/80 flex items-center justify-center flex-shrink-0">
+                            <span className="font-display text-sm text-primary-foreground">{topic.id}</span>
+                          </div>
+                          <div className="min-w-0 flex-1">
+                            <h3 className="font-semibold text-base mb-1 group-hover:text-primary transition-colors">{topic.title}</h3>
+                            <p className="text-xs text-muted-foreground line-clamp-2">{topic.description}</p>
+                          </div>
+                        </div>
+                        <ChevronRight className="w-5 h-5 text-muted-foreground group-hover:text-primary transition-all flex-shrink-0 mt-3" />
+                      </div>
                     </div>
                   </div>
                 </Link>
