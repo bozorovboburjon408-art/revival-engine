@@ -48,6 +48,8 @@ const Graphics = () => {
   const [showIntegral, setShowIntegral] = useState(false);
   const [integralBounds, setIntegralBounds] = useState<IntegralBounds>({ a: 0, b: 3.14, funcIndex: 0 });
   const [integralValue, setIntegralValue] = useState<number | null>(null);
+  const [manualX, setManualX] = useState<string>('');
+  const [manualXPoint, setManualXPoint] = useState<number | null>(null);
   const lastMouseRef = useRef({ x: 0, y: 0 });
 
   // Parse and evaluate mathematical expression
@@ -448,8 +450,56 @@ const Graphics = () => {
         });
       }
 
+      // Draw manual X point
+      if (manualXPoint !== null && progressRef.current >= width) {
+        const px = centerX + manualXPoint * scale;
+
+        // Vertical line (solid, more visible)
+        ctx.strokeStyle = 'rgba(34, 197, 94, 0.6)';
+        ctx.lineWidth = 2;
+        ctx.beginPath();
+        ctx.moveTo(px, 0);
+        ctx.lineTo(px, height);
+        ctx.stroke();
+
+        // Draw points on each function
+        functions.forEach(func => {
+          const y = evaluateExpression(func.expression, manualXPoint);
+          if (y !== null) {
+            const pointY = centerY - y * scale;
+            
+            // Outer glow
+            ctx.beginPath();
+            ctx.arc(px, pointY, 10, 0, Math.PI * 2);
+            ctx.fillStyle = func.color + '40';
+            ctx.fill();
+            
+            // Inner point
+            ctx.beginPath();
+            ctx.arc(px, pointY, 6, 0, Math.PI * 2);
+            ctx.fillStyle = func.color;
+            ctx.fill();
+            ctx.strokeStyle = '#fff';
+            ctx.lineWidth = 2;
+            ctx.stroke();
+
+            // Value label
+            ctx.fillStyle = 'rgba(0, 0, 0, 0.85)';
+            ctx.fillRect(px + 12, pointY - 12, 80, 20);
+            ctx.fillStyle = '#fff';
+            ctx.font = 'bold 11px monospace';
+            ctx.fillText(`y = ${y.toFixed(3)}`, px + 16, pointY + 2);
+          }
+        });
+
+        // X label at bottom
+        ctx.fillStyle = 'rgba(34, 197, 94, 0.9)';
+        ctx.font = 'bold 12px monospace';
+        ctx.fillText(`x = ${manualXPoint}`, px - 25, height - 10);
+      }
+
       // Draw cursor crosshair and values
-      if (cursorPos && !isDragging) {
+      if (cursorPos && !isDragging && manualXPoint === null) {
         const px = centerX + cursorPos.x * scale;
         const py = centerY - cursorPos.y * scale;
 
@@ -498,7 +548,7 @@ const Graphics = () => {
     return () => {
       cancelAnimationFrame(animationRef.current);
     };
-  }, [functions, zoom, offset, animationKey, evaluateExpression, cursorPos, isDragging, roots, intersections, showIntegral, integralBounds]);
+  }, [functions, zoom, offset, animationKey, evaluateExpression, cursorPos, isDragging, roots, intersections, showIntegral, integralBounds, manualXPoint]);
 
   const addFunction = () => {
     if (!newExpression.trim()) {
@@ -662,40 +712,75 @@ const Graphics = () => {
               </CardContent>
             </Card>
 
-            {/* Cursor Info */}
-            {cursorPos && cursorValues.length > 0 && (
-              <Card className="animate-fade-in">
-                <CardHeader className="pb-2">
-                  <CardTitle className="text-sm flex items-center gap-2">
-                    <Crosshair className="h-4 w-4" />
-                    x = {cursorPos.x.toFixed(3)}
-                  </CardTitle>
-                </CardHeader>
-                <CardContent className="space-y-2">
-                  {cursorValues.map((v, i) => (
-                    <div key={i} className="flex items-center justify-between text-sm">
-                      <div className="flex items-center gap-2">
-                        <div className="w-3 h-3 rounded-full" style={{ backgroundColor: v.color }} />
-                        <span className="font-mono text-muted-foreground">{v.expr}</span>
-                      </div>
-                      <span className="font-mono font-semibold">{v.y.toFixed(4)}</span>
+            {/* X Value Calculator */}
+            <Card>
+              <CardHeader className="pb-2">
+                <CardTitle className="text-sm flex items-center gap-2">
+                  <Crosshair className="h-4 w-4" />
+                  Nuqta qiymatlari
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-3">
+                {/* Manual X input */}
+                <div className="flex items-center gap-2">
+                  <Label className="text-sm whitespace-nowrap">x =</Label>
+                  <Input
+                    type="number"
+                    step="0.1"
+                    value={manualX}
+                    onChange={(e) => {
+                      setManualX(e.target.value);
+                      const val = parseFloat(e.target.value);
+                      setManualXPoint(isNaN(val) ? null : val);
+                    }}
+                    placeholder="qiymat kiriting"
+                    className="h-8 font-mono text-sm"
+                  />
+                </div>
+
+                {/* Show values for manual X or cursor */}
+                {(manualXPoint !== null || cursorPos) && (
+                  <div className="space-y-2 pt-2 border-t border-border">
+                    <div className="text-xs text-muted-foreground">
+                      {manualXPoint !== null ? `x = ${manualXPoint}` : cursorPos ? `x = ${cursorPos.x.toFixed(3)} (kursor)` : ''}
                     </div>
-                  ))}
-                  {cursorValues.length > 0 && (
-                    <div className="pt-2 border-t border-border">
-                      <div className="flex items-center justify-between text-sm">
-                        <span className="flex items-center gap-1 text-muted-foreground">
-                          <TrendingUp className="h-3 w-3" /> Hosila
-                        </span>
-                        <span className="font-mono">
-                          {calculateDerivative(cursorValues[0].expr, cursorPos.x)?.toFixed(4) ?? '—'}
-                        </span>
+                    {functions.map((func, i) => {
+                      const xVal = manualXPoint !== null ? manualXPoint : cursorPos?.x;
+                      if (xVal === undefined) return null;
+                      const y = evaluateExpression(func.expression, xVal);
+                      return (
+                        <div key={i} className="flex items-center justify-between text-sm">
+                          <div className="flex items-center gap-2">
+                            <div className="w-3 h-3 rounded-full" style={{ backgroundColor: func.color }} />
+                            <span className="font-mono text-muted-foreground">{func.expression}</span>
+                          </div>
+                          <span className="font-mono font-semibold">
+                            {y !== null ? y.toFixed(4) : '—'}
+                          </span>
+                        </div>
+                      );
+                    })}
+                    
+                    {/* Derivative */}
+                    {functions.length > 0 && (
+                      <div className="pt-2 border-t border-border">
+                        <div className="flex items-center justify-between text-sm">
+                          <span className="flex items-center gap-1 text-muted-foreground">
+                            <TrendingUp className="h-3 w-3" /> Hosila (f₁)
+                          </span>
+                          <span className="font-mono">
+                            {calculateDerivative(
+                              functions[0].expression, 
+                              manualXPoint !== null ? manualXPoint : cursorPos?.x ?? 0
+                            )?.toFixed(4) ?? '—'}
+                          </span>
+                        </div>
                       </div>
-                    </div>
-                  )}
-                </CardContent>
-              </Card>
-            )}
+                    )}
+                  </div>
+                )}
+              </CardContent>
+            </Card>
 
             {/* Integral Calculator */}
             <Card>
