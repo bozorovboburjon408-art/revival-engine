@@ -6,7 +6,8 @@ import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { RotateCcw, Plus, Trash2, Crosshair, TrendingUp } from "lucide-react";
+import { Switch } from "@/components/ui/switch";
+import { RotateCcw, Plus, Trash2, Crosshair, TrendingUp, AreaChart } from "lucide-react";
 import { toast } from "sonner";
 
 interface FunctionItem {
@@ -18,6 +19,12 @@ interface FunctionItem {
 interface Point {
   x: number;
   y: number;
+}
+
+interface IntegralBounds {
+  a: number;
+  b: number;
+  funcIndex: number;
 }
 
 const COLORS = ['#f97316', '#22c55e', '#3b82f6', '#a855f7', '#ec4899', '#14b8a6'];
@@ -38,6 +45,9 @@ const Graphics = () => {
   const [cursorValues, setCursorValues] = useState<{expr: string, y: number, color: string}[]>([]);
   const [roots, setRoots] = useState<{expr: string, points: number[], color: string}[]>([]);
   const [intersections, setIntersections] = useState<Point[]>([]);
+  const [showIntegral, setShowIntegral] = useState(false);
+  const [integralBounds, setIntegralBounds] = useState<IntegralBounds>({ a: 0, b: 3.14, funcIndex: 0 });
+  const [integralValue, setIntegralValue] = useState<number | null>(null);
   const lastMouseRef = useRef({ x: 0, y: 0 });
 
   // Parse and evaluate mathematical expression
@@ -147,9 +157,36 @@ const Graphics = () => {
     return points;
   }, [evaluateExpression]);
 
+  // Calculate definite integral using Simpson's rule
+  const calculateIntegral = useCallback((expr: string, a: number, b: number): number | null => {
+    const n = 1000; // Number of intervals (must be even)
+    const h = (b - a) / n;
+    
+    let sum = 0;
+    const y0 = evaluateExpression(expr, a);
+    const yn = evaluateExpression(expr, b);
+    
+    if (y0 === null || yn === null) return null;
+    
+    sum += y0 + yn;
+    
+    for (let i = 1; i < n; i++) {
+      const x = a + i * h;
+      const y = evaluateExpression(expr, x);
+      if (y === null) return null;
+      
+      if (i % 2 === 0) {
+        sum += 2 * y;
+      } else {
+        sum += 4 * y;
+      }
+    }
+    
+    return (h / 3) * sum;
+  }, [evaluateExpression]);
+
   // Calculate roots and intersections when functions change
   useEffect(() => {
-    // Find roots for each function
     const newRoots = functions.map(f => ({
       expr: f.expression,
       points: findRoots(f.expression),
@@ -157,7 +194,6 @@ const Graphics = () => {
     }));
     setRoots(newRoots);
 
-    // Find intersections between all pairs of functions
     const newIntersections: Point[] = [];
     for (let i = 0; i < functions.length; i++) {
       for (let j = i + 1; j < functions.length; j++) {
@@ -167,6 +203,18 @@ const Graphics = () => {
     }
     setIntersections(newIntersections);
   }, [functions, findRoots, findIntersections]);
+
+  // Calculate integral when bounds or function changes
+  useEffect(() => {
+    if (showIntegral && functions[integralBounds.funcIndex]) {
+      const value = calculateIntegral(
+        functions[integralBounds.funcIndex].expression,
+        integralBounds.a,
+        integralBounds.b
+      );
+      setIntegralValue(value);
+    }
+  }, [showIntegral, integralBounds, functions, calculateIntegral]);
 
   // Reset animation when functions change
   useEffect(() => {
@@ -252,6 +300,65 @@ const Graphics = () => {
       }
 
       ctx.fillText('0', centerX + 5, centerY + 15);
+
+      // Draw integral area (shaded region)
+      if (showIntegral && functions[integralBounds.funcIndex] && progressRef.current >= width) {
+        const func = functions[integralBounds.funcIndex];
+        const a = Math.min(integralBounds.a, integralBounds.b);
+        const b = Math.max(integralBounds.a, integralBounds.b);
+        
+        ctx.beginPath();
+        ctx.moveTo(centerX + a * scale, centerY);
+        
+        // Draw curve from a to b
+        for (let x = a; x <= b; x += 0.02) {
+          const y = evaluateExpression(func.expression, x);
+          if (y !== null) {
+            const px = centerX + x * scale;
+            const py = centerY - y * scale;
+            ctx.lineTo(px, py);
+          }
+        }
+        
+        // Close path back to X axis
+        ctx.lineTo(centerX + b * scale, centerY);
+        ctx.closePath();
+        
+        // Fill with semi-transparent color
+        ctx.fillStyle = func.color + '40'; // 40 = 25% opacity
+        ctx.fill();
+        
+        // Draw boundary lines
+        ctx.strokeStyle = func.color;
+        ctx.lineWidth = 2;
+        ctx.setLineDash([5, 5]);
+        
+        // Left boundary (x = a)
+        ctx.beginPath();
+        const ya = evaluateExpression(func.expression, a);
+        if (ya !== null) {
+          ctx.moveTo(centerX + a * scale, centerY);
+          ctx.lineTo(centerX + a * scale, centerY - ya * scale);
+          ctx.stroke();
+        }
+        
+        // Right boundary (x = b)
+        ctx.beginPath();
+        const yb = evaluateExpression(func.expression, b);
+        if (yb !== null) {
+          ctx.moveTo(centerX + b * scale, centerY);
+          ctx.lineTo(centerX + b * scale, centerY - yb * scale);
+          ctx.stroke();
+        }
+        
+        ctx.setLineDash([]);
+        
+        // Labels for a and b
+        ctx.fillStyle = '#fff';
+        ctx.font = 'bold 12px monospace';
+        ctx.fillText(`a=${a}`, centerX + a * scale - 15, centerY + 30);
+        ctx.fillText(`b=${b}`, centerX + b * scale - 15, centerY + 30);
+      }
 
       // Draw functions with animation
       functions.forEach((func, funcIndex) => {
@@ -391,7 +498,7 @@ const Graphics = () => {
     return () => {
       cancelAnimationFrame(animationRef.current);
     };
-  }, [functions, zoom, offset, animationKey, evaluateExpression, cursorPos, isDragging, roots, intersections]);
+  }, [functions, zoom, offset, animationKey, evaluateExpression, cursorPos, isDragging, roots, intersections, showIntegral, integralBounds]);
 
   const addFunction = () => {
     if (!newExpression.trim()) {
@@ -589,6 +696,89 @@ const Graphics = () => {
                 </CardContent>
               </Card>
             )}
+
+            {/* Integral Calculator */}
+            <Card>
+              <CardHeader className="pb-2">
+                <CardTitle className="text-sm flex items-center justify-between">
+                  <span className="flex items-center gap-2">
+                    <AreaChart className="h-4 w-4" />
+                    Integral (Yuza)
+                  </span>
+                  <Switch
+                    checked={showIntegral}
+                    onCheckedChange={setShowIntegral}
+                  />
+                </CardTitle>
+              </CardHeader>
+              {showIntegral && (
+                <CardContent className="space-y-4">
+                  {/* Function selector */}
+                  <div className="space-y-2">
+                    <Label className="text-xs">Funksiya</Label>
+                    <div className="flex flex-wrap gap-1">
+                      {functions.map((f, i) => (
+                        <Button
+                          key={f.id}
+                          variant={integralBounds.funcIndex === i ? "default" : "outline"}
+                          size="sm"
+                          className="font-mono text-xs h-7"
+                          onClick={() => setIntegralBounds(prev => ({ ...prev, funcIndex: i }))}
+                        >
+                          <div 
+                            className="w-2 h-2 rounded-full mr-1" 
+                            style={{ backgroundColor: f.color }} 
+                          />
+                          {f.expression}
+                        </Button>
+                      ))}
+                    </div>
+                  </div>
+
+                  {/* Bounds inputs */}
+                  <div className="grid grid-cols-2 gap-3">
+                    <div className="space-y-1">
+                      <Label className="text-xs">a (boshlang'ich)</Label>
+                      <Input
+                        type="number"
+                        step="0.1"
+                        value={integralBounds.a}
+                        onChange={(e) => setIntegralBounds(prev => ({ 
+                          ...prev, 
+                          a: parseFloat(e.target.value) || 0 
+                        }))}
+                        className="h-8 font-mono text-sm"
+                      />
+                    </div>
+                    <div className="space-y-1">
+                      <Label className="text-xs">b (oxirgi)</Label>
+                      <Input
+                        type="number"
+                        step="0.1"
+                        value={integralBounds.b}
+                        onChange={(e) => setIntegralBounds(prev => ({ 
+                          ...prev, 
+                          b: parseFloat(e.target.value) || 0 
+                        }))}
+                        className="h-8 font-mono text-sm"
+                      />
+                    </div>
+                  </div>
+
+                  {/* Result */}
+                  {integralValue !== null && (
+                    <div className="p-3 bg-primary/10 rounded-lg border border-primary/20">
+                      <div className="text-xs text-muted-foreground mb-1">
+                        ∫<sub>{integralBounds.a}</sub><sup>{integralBounds.b}</sup> {functions[integralBounds.funcIndex]?.expression} dx =
+                      </div>
+                      <div className="text-2xl font-bold font-mono text-primary">
+                        {integralValue.toFixed(6)}
+                      </div>
+                    </div>
+                  )}
+                </CardContent>
+              )}
+            </Card>
 
             {/* Roots */}
             {roots.some(r => r.points.length > 0) && (
