@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
-import { Menu, BookOpen, Calculator, ClipboardList, LineChart, LogIn, Play, FileText } from "lucide-react";
+import { Menu, BookOpen, ClipboardList, LineChart, LogIn, Play, FileText } from "lucide-react";
 import { cn } from "@/lib/utils";
 import {
   Tooltip,
@@ -13,7 +13,6 @@ import {
 const navItems = [
   { href: "/library", label: "Kutubxona", icon: BookOpen },
   { href: "/formulas", label: "Formulalar", icon: FileText },
-  { href: "/calculator", label: "AI Kalkulyator", icon: Calculator },
   { href: "/tests", label: "Testlar", icon: ClipboardList },
   { href: "/graphics", label: "Grafika", icon: LineChart },
 ];

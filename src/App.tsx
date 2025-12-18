@@ -9,7 +9,7 @@ import Index from "./pages/Index";
 import Library from "./pages/Library";
 import TopicDetail from "./pages/TopicDetail";
 import Formulas from "./pages/Formulas";
-import Calculator from "./pages/Calculator";
+
 import Tests from "./pages/Tests";
 import Graphics from "./pages/Graphics";
 import AdminLogin from "./pages/AdminLogin";
@@ -67,7 +67,7 @@ const App = () => {
                 <Route path="/library" element={<Library />} />
                 <Route path="/library/:topicId" element={<TopicDetail />} />
                 <Route path="/formulas" element={<Formulas />} />
-                <Route path="/calculator" element={<Calculator />} />
+                
                 <Route path="/tests" element={<Tests />} />
                 <Route path="/graphics" element={<Graphics />} />
                 <Route path="/admin/login" element={<AdminLogin />} />

@@ -1,6 +1,6 @@
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { ArrowRight, Sparkles, Zap, BookOpen } from "lucide-react";
+import { ArrowRight, Sparkles, BookOpen } from "lucide-react";
 
 export const HeroSection = () => {
   return (
@@ -60,19 +60,13 @@ export const HeroSection = () => {
             <span className="text-foreground font-medium">interaktiv</span> tarzda o'rganing
           </p>
 
-          {/* CTA Buttons */}
-          <div className="flex flex-col sm:flex-row items-center justify-center gap-4 animate-slide-up" style={{ animationDelay: "0.2s" }}>
+          {/* CTA Button */}
+          <div className="flex items-center justify-center animate-slide-up" style={{ animationDelay: "0.2s" }}>
             <Link to="/library">
               <Button variant="hero" size="xl" className="gap-3 group min-w-[200px]">
                 <BookOpen className="w-5 h-5" />
                 Boshlash
                 <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
-              </Button>
-            </Link>
-            <Link to="/calculator">
-              <Button variant="glass" size="xl" className="gap-3 min-w-[200px]">
-                <Zap className="w-5 h-5 text-amber-500" />
-                AI Kalkulyator
               </Button>
             </Link>
           </div>
