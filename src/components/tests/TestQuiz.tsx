@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useMemo } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -7,6 +7,18 @@ import { Test, TestQuestion } from "@/lib/tests";
 import { Clock, ChevronLeft, ChevronRight, CheckCircle2, XCircle, AlertCircle } from "lucide-react";
 import { cn } from "@/lib/utils";
 
+const QUESTIONS_PER_TEST = 10;
+
+// Fisher-Yates shuffle algorithm
+const shuffleArray = <T,>(array: T[]): T[] => {
+  const shuffled = [...array];
+  for (let i = shuffled.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+  }
+  return shuffled;
+};
+
 interface TestQuizProps {
   test: Test;
   onFinish: (score: number, total: number, answers: number[]) => void;
@@ -14,16 +26,22 @@ interface TestQuizProps {
 }
 
 export const TestQuiz = ({ test, onFinish, onBack }: TestQuizProps) => {
+  // Randomly select 10 questions from the pool
+  const selectedQuestions = useMemo(() => {
+    const shuffled = shuffleArray(test.questions);
+    return shuffled.slice(0, Math.min(QUESTIONS_PER_TEST, shuffled.length));
+  }, [test.id]); // Only regenerate when test changes
+
   const [currentQuestion, setCurrentQuestion] = useState(0);
-  const [selectedAnswers, setSelectedAnswers] = useState<number[]>(new Array(test.questions.length).fill(-1));
+  const [selectedAnswers, setSelectedAnswers] = useState<number[]>(new Array(selectedQuestions.length).fill(-1));
   const [timeLeft, setTimeLeft] = useState(test.timeLimit * 60);
   const [showResult, setShowResult] = useState(false);
 
   const calculateScore = useCallback(() => {
-    return test.questions.reduce((score, question, index) => {
+    return selectedQuestions.reduce((score, question, index) => {
       return score + (selectedAnswers[index] === question.correctAnswer ? 1 : 0);
     }, 0);
-  }, [test.questions, selectedAnswers]);
+  }, [selectedQuestions, selectedAnswers]);
 
   useEffect(() => {
     if (timeLeft <= 0 || showResult) return;
@@ -56,7 +74,7 @@ export const TestQuiz = ({ test, onFinish, onBack }: TestQuizProps) => {
   };
 
   const handleNext = () => {
-    if (currentQuestion < test.questions.length - 1) {
+    if (currentQuestion < selectedQuestions.length - 1) {
       setCurrentQuestion(currentQuestion + 1);
     }
   };
@@ -73,11 +91,11 @@ export const TestQuiz = ({ test, onFinish, onBack }: TestQuizProps) => {
 
   const handleComplete = () => {
     const score = calculateScore();
-    onFinish(score, test.questions.length, selectedAnswers);
+    onFinish(score, selectedQuestions.length, selectedAnswers);
   };
 
-  const question = test.questions[currentQuestion];
-  const progress = ((currentQuestion + 1) / test.questions.length) * 100;
+  const question = selectedQuestions[currentQuestion];
+  const progress = ((currentQuestion + 1) / selectedQuestions.length) * 100;
   const answeredCount = selectedAnswers.filter(a => a !== -1).length;
 
   const getDifficultyColor = (difficulty: string) => {
@@ -100,7 +118,7 @@ export const TestQuiz = ({ test, onFinish, onBack }: TestQuizProps) => {
 
   if (showResult) {
     const score = calculateScore();
-    const percentage = Math.round((score / test.questions.length) * 100);
+    const percentage = Math.round((score / selectedQuestions.length) * 100);
 
     return (
       <div className="space-y-6">
@@ -117,7 +135,7 @@ export const TestQuiz = ({ test, onFinish, onBack }: TestQuizProps) => {
                 {percentage}%
               </div>
               <p className="text-muted-foreground">
-                {score} / {test.questions.length} to'g'ri javob
+                {score} / {selectedQuestions.length} to'g'ri javob
               </p>
               <p className="text-sm text-muted-foreground mt-1">
                 {percentage >= 70 ? "Ajoyib natija! 🎉" : percentage >= 50 ? "Yaxshi harakat! 👍" : "Ko'proq mashq qiling! 💪"}
@@ -125,7 +143,7 @@ export const TestQuiz = ({ test, onFinish, onBack }: TestQuizProps) => {
             </div>
 
             <div className="space-y-3 max-h-96 overflow-y-auto">
-              {test.questions.map((q, index) => {
+              {selectedQuestions.map((q, index) => {
                 const isCorrect = selectedAnswers[index] === q.correctAnswer;
                 const wasAnswered = selectedAnswers[index] !== -1;
 
@@ -200,7 +218,7 @@ export const TestQuiz = ({ test, onFinish, onBack }: TestQuizProps) => {
       {/* Progress */}
       <div className="space-y-2">
         <div className="flex justify-between text-sm text-muted-foreground">
-          <span>Savol {currentQuestion + 1} / {test.questions.length}</span>
+          <span>Savol {currentQuestion + 1} / {selectedQuestions.length}</span>
           <span>{answeredCount} javob berildi</span>
         </div>
         <Progress value={progress} className="h-2" />
@@ -247,7 +265,7 @@ export const TestQuiz = ({ test, onFinish, onBack }: TestQuizProps) => {
 
       {/* Question Navigation */}
       <div className="flex flex-wrap gap-2 justify-center">
-        {test.questions.map((_, index) => (
+        {selectedQuestions.map((_, index) => (
           <button
             key={index}
             onClick={() => setCurrentQuestion(index)}
@@ -276,7 +294,7 @@ export const TestQuiz = ({ test, onFinish, onBack }: TestQuizProps) => {
           <ChevronLeft className="h-4 w-4 mr-1" />
           Oldingi
         </Button>
-        {currentQuestion === test.questions.length - 1 ? (
+        {currentQuestion === selectedQuestions.length - 1 ? (
           <Button onClick={handleFinish} className="flex-1">
             Yakunlash
           </Button>
