@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
-import { Menu, BookOpen, ClipboardList, LineChart, LogIn, Play, FileText } from "lucide-react";
+import { Menu, BookOpen, ClipboardList, LineChart, Play, FileText } from "lucide-react";
 import { cn } from "@/lib/utils";
 import {
   Tooltip,
@@ -96,12 +96,6 @@ export const Header = ({ onReplaySplash }: HeaderProps) => {
             </Tooltip>
           )}
 
-          <Link to="/admin/login" className="hidden md:block">
-            <Button variant="outline" size="sm" className="gap-2 rounded-full">
-              <LogIn className="w-4 h-4" />
-              Admin
-            </Button>
-          </Link>
 
           <Sheet open={isOpen} onOpenChange={setIsOpen}>
             <SheetTrigger asChild className="md:hidden">
@@ -158,12 +152,6 @@ export const Header = ({ onReplaySplash }: HeaderProps) => {
                     </Button>
                   )}
                   
-                  <Link to="/admin/login" onClick={() => setIsOpen(false)}>
-                    <Button variant="outline" className="w-full gap-2 rounded-xl h-12">
-                      <LogIn className="w-4 h-4" />
-                      Admin kirish
-                    </Button>
-                  </Link>
                 </nav>
               </div>
             </SheetContent>
