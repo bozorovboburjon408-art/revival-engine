@@ -1,7 +1,32 @@
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import { BookOpen, Calculator, ClipboardList, LineChart, Github, Twitter, Youtube, Mail, Heart, ExternalLink } from "lucide-react";
 
 export const Footer = () => {
+  const location = useLocation();
+  const isHomePage = location.pathname === "/";
+
+  // Minimal footer for non-home pages
+  if (!isHomePage) {
+    return (
+      <footer className="border-t border-border/40 bg-secondary/30">
+        <div className="container py-6">
+          <div className="flex flex-col md:flex-row items-center justify-between gap-4">
+            <Link to="/" className="flex items-center gap-2 group">
+              <div className="w-8 h-8 rounded-xl bg-gradient-to-br from-primary to-primary/80 flex items-center justify-center">
+                <span className="text-primary-foreground font-display text-lg">∫</span>
+              </div>
+              <span className="font-display text-lg">MathPlatform</span>
+            </Link>
+            <p className="text-sm text-muted-foreground">
+              © 2024 MathPlatform. Barcha huquqlar himoyalangan.
+            </p>
+          </div>
+        </div>
+      </footer>
+    );
+  }
+
+  // Full footer for home page
   return (
     <footer className="relative border-t border-border/40 overflow-hidden">
       {/* Background Effects */}
