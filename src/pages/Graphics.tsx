@@ -9,6 +9,7 @@ import { Badge } from "@/components/ui/badge";
 import { Switch } from "@/components/ui/switch";
 import { RotateCcw, Plus, Trash2, Crosshair, TrendingUp, AreaChart } from "lucide-react";
 import { toast } from "sonner";
+import { PageTransition } from "@/components/PageTransition";
 
 interface FunctionItem {
   id: string;
@@ -663,6 +664,7 @@ const Graphics = () => {
   };
 
   return (
+    <PageTransition>
     <div className="min-h-screen flex flex-col">
       <Header />
       <main className="flex-1 container mx-auto px-4 py-8">
@@ -1006,6 +1008,7 @@ const Graphics = () => {
       </main>
       <Footer />
     </div>
+    </PageTransition>
   );
 };
 
