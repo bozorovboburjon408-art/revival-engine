@@ -1,12 +1,21 @@
 import { Link } from "react-router-dom";
 import { BookOpen, FileText, ClipboardList, LineChart, ArrowRight, Sparkles } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { useLanguage } from "@/hooks/useLanguage";
 
-const features = [
+type FeatureKey = 'library' | 'formulas' | 'tests' | 'graphics';
+
+const features: {
+  icon: typeof BookOpen;
+  key: FeatureKey;
+  href: string;
+  gradient: string;
+  bgGlow: string;
+  delay: string;
+}[] = [
   {
     icon: BookOpen,
-    title: "Kutubxona",
-    description: "18 ta mavzu bo'yicha to'liq nazariy materiallar. Hosilalardan integrallar, qatorgacha.",
+    key: "library",
     href: "/library",
     gradient: "from-blue-500 via-indigo-500 to-purple-600",
     bgGlow: "bg-blue-500/20",
@@ -14,8 +23,7 @@ const features = [
   },
   {
     icon: FileText,
-    title: "Formulalar",
-    description: "174+ matematik formulalar. Algebra, geometriya, trigonometriya va boshqalar.",
+    key: "formulas",
     href: "/formulas",
     gradient: "from-emerald-400 via-teal-500 to-cyan-600",
     bgGlow: "bg-emerald-500/20",
@@ -23,8 +31,7 @@ const features = [
   },
   {
     icon: ClipboardList,
-    title: "Test bo'limi",
-    description: "Mavzular bo'yicha testlar. Savollar va avtomatik natijalar.",
+    key: "tests",
     href: "/tests",
     gradient: "from-orange-400 via-amber-500 to-yellow-500",
     bgGlow: "bg-orange-500/20",
@@ -32,8 +39,7 @@ const features = [
   },
   {
     icon: LineChart,
-    title: "Grafika",
-    description: "Funksiyalar grafiklarini interaktiv tarzda chizing. Formuladan grafik.",
+    key: "graphics",
     href: "/graphics",
     gradient: "from-purple-500 via-pink-500 to-rose-500",
     bgGlow: "bg-purple-500/20",
@@ -42,6 +48,8 @@ const features = [
 ];
 
 export const FeaturesSection = () => {
+  const { t } = useLanguage();
+
   return (
     <section className="py-28 md:py-36 relative overflow-hidden">
       {/* Background */}
@@ -53,19 +61,20 @@ export const FeaturesSection = () => {
         <div className="text-center max-w-3xl mx-auto mb-20">
           <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full glass-card text-sm font-medium mb-6">
             <Sparkles className="w-4 h-4 text-primary" />
-            <span>Asosiy imkoniyatlar</span>
+            <span>{t.features.badge}</span>
           </div>
           <h2 className="text-4xl md:text-6xl mb-6">
-            To'rtta kuchli <span className="gradient-text">bo'lim</span>
+            {t.features.title} <span className="gradient-text">{t.features.titleHighlight}</span>
           </h2>
           <p className="text-lg md:text-xl text-muted-foreground">
-            Matematikani o'rganish uchun zarur bo'lgan barcha vositalar bir joyda
+            {t.features.subtitle}
           </p>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-5xl mx-auto">
           {features.map((feature) => {
             const Icon = feature.icon;
+            const featureTranslation = t.features[feature.key];
             return (
               <Link
                 key={feature.href}
@@ -89,15 +98,15 @@ export const FeaturesSection = () => {
                   </div>
 
                   <h3 className="text-2xl font-bold mb-3 group-hover:gradient-text transition-all duration-300">
-                    {feature.title}
+                    {featureTranslation.title}
                   </h3>
 
                   <p className="text-muted-foreground mb-6 leading-relaxed">
-                    {feature.description}
+                    {featureTranslation.description}
                   </p>
 
                   <div className="flex items-center gap-2 text-primary font-semibold">
-                    <span>Ko'rish</span>
+                    <span>{t.features.view}</span>
                     <ArrowRight className="w-4 h-4 group-hover:translate-x-2 transition-transform duration-300" />
                   </div>
                 </div>

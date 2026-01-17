@@ -2,19 +2,22 @@ import { useState, useEffect } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
-import { Menu, BookOpen, ClipboardList, LineChart, Play, FileText } from "lucide-react";
+import { Menu, BookOpen, ClipboardList, LineChart, Play, FileText, Globe } from "lucide-react";
 import { cn } from "@/lib/utils";
 import {
   Tooltip,
   TooltipContent,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
+import { useLanguage } from "@/hooks/useLanguage";
 
-const navItems = [
-  { href: "/library", label: "Kutubxona", icon: BookOpen },
-  { href: "/formulas", label: "Formulalar", icon: FileText },
-  { href: "/tests", label: "Testlar", icon: ClipboardList },
-  { href: "/graphics", label: "Grafika", icon: LineChart },
+type NavKey = 'library' | 'formulas' | 'tests' | 'graphics';
+
+const navItems: { href: string; key: NavKey; icon: typeof BookOpen }[] = [
+  { href: "/library", key: "library", icon: BookOpen },
+  { href: "/formulas", key: "formulas", icon: FileText },
+  { href: "/tests", key: "tests", icon: ClipboardList },
+  { href: "/graphics", key: "graphics", icon: LineChart },
 ];
 
 interface HeaderProps {
@@ -25,6 +28,7 @@ export const Header = ({ onReplaySplash }: HeaderProps) => {
   const [isOpen, setIsOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const location = useLocation();
+  const { language, setLanguage, t } = useLanguage();
 
   useEffect(() => {
     const handleScroll = () => {
@@ -33,6 +37,10 @@ export const Header = ({ onReplaySplash }: HeaderProps) => {
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
+
+  const toggleLanguage = () => {
+    setLanguage(language === 'uz' ? 'en' : 'uz');
+  };
 
   return (
     <header className={cn(
@@ -70,14 +78,32 @@ export const Header = ({ onReplaySplash }: HeaderProps) => {
                   )}
                 >
                   <Icon className="w-4 h-4" />
-                  {item.label}
+                  {t.nav[item.key]}
                 </Button>
               </Link>
             );
           })}
         </nav>
 
-        <div className="flex items-center gap-3">
+        <div className="flex items-center gap-2">
+          {/* Language Toggle */}
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={toggleLanguage}
+                className="rounded-full gap-2 font-medium"
+              >
+                <Globe className="w-4 h-4" />
+                <span className="uppercase">{language}</span>
+              </Button>
+            </TooltipTrigger>
+            <TooltipContent>
+              <p>{language === 'uz' ? 'Switch to English' : "O'zbek tiliga o'tish"}</p>
+            </TooltipContent>
+          </Tooltip>
+
           {onReplaySplash && (
             <Tooltip>
               <TooltipTrigger asChild>
@@ -91,11 +117,10 @@ export const Header = ({ onReplaySplash }: HeaderProps) => {
                 </Button>
               </TooltipTrigger>
               <TooltipContent>
-                <p>Animatsiyani qayta ko'rish</p>
+                <p>{t.nav.replayAnimation}</p>
               </TooltipContent>
             </Tooltip>
           )}
-
 
           <Sheet open={isOpen} onOpenChange={setIsOpen}>
             <SheetTrigger asChild className="md:hidden">
@@ -130,13 +155,23 @@ export const Header = ({ onReplaySplash }: HeaderProps) => {
                           )}
                         >
                           <Icon className="w-5 h-5" />
-                          {item.label}
+                          {t.nav[item.key]}
                         </Button>
                       </Link>
                     );
                   })}
                   
                   <div className="border-t border-border my-4" />
+
+                  {/* Mobile Language Toggle */}
+                  <Button
+                    variant="ghost"
+                    className="w-full justify-start gap-3 rounded-xl h-12"
+                    onClick={toggleLanguage}
+                  >
+                    <Globe className="w-5 h-5" />
+                    {language === 'uz' ? 'English' : "O'zbekcha"}
+                  </Button>
                   
                   {onReplaySplash && (
                     <Button
@@ -148,7 +183,7 @@ export const Header = ({ onReplaySplash }: HeaderProps) => {
                       }}
                     >
                       <Play className="w-5 h-5" />
-                      Animatsiyani qayta ko'rish
+                      {t.nav.replayAnimation}
                     </Button>
                   )}
                   
