@@ -1,20 +1,26 @@
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { ArrowRight } from "lucide-react";
+import { ArrowRight, Sparkles } from "lucide-react";
 import { mathTopics } from "@/lib/mathTopics";
+import { useLanguage } from "@/hooks/useLanguage";
 
 export const TopicsPreview = () => {
+  const { t } = useLanguage();
   const previewTopics = mathTopics.slice(0, 6);
 
   return (
     <section className="py-24 md:py-32">
       <div className="container px-4">
-        <div className="text-center max-w-2xl mx-auto mb-16">
-          <h2 className="font-display text-4xl md:text-5xl mb-4">
-            Mavzular <span className="gradient-text">ro'yxati</span>
+        <div className="text-center max-w-3xl mx-auto mb-16">
+          <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full glass-card text-sm font-medium mb-6">
+            <Sparkles className="w-4 h-4 text-primary" />
+            <span>{t.topics.badge}</span>
+          </div>
+          <h2 className="font-display text-4xl md:text-6xl mb-6">
+            {t.topics.title} <span className="gradient-text">{t.topics.titleHighlight}</span>
           </h2>
-          <p className="text-lg text-muted-foreground">
-            Matematik analiz va differensial tenglamalar bo'yicha 18 ta to'liq mavzu
+          <p className="text-lg md:text-xl text-muted-foreground">
+            {t.topics.subtitle}
           </p>
         </div>
 
@@ -48,7 +54,7 @@ export const TopicsPreview = () => {
         <div className="text-center mt-12">
           <Link to="/library">
             <Button variant="hero" size="lg" className="gap-2 group">
-              Barcha mavzularni ko'rish
+              {t.topics.viewAll}
               <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
             </Button>
           </Link>
