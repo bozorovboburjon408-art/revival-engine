@@ -1,11 +1,8 @@
 import { Link, useLocation } from "react-router-dom";
 import { BookOpen, FileText, ClipboardList, LineChart, Github, Mail, ExternalLink, Send } from "lucide-react";
-import { useLanguage } from "@/hooks/useLanguage";
-
 export const Footer = () => {
   const location = useLocation();
   const isHomePage = location.pathname === "/";
-  const { t } = useLanguage();
 
   // Minimal footer for non-home pages
   if (!isHomePage) {
@@ -20,7 +17,7 @@ export const Footer = () => {
               <span className="font-display text-lg">MathPlatform</span>
             </Link>
             <p className="text-sm text-muted-foreground">
-              © 2025 MathPlatform. {t.footer.rights}
+              © 2025 MathPlatform. Barcha huquqlar himoyalangan.
             </p>
           </div>
         </div>
@@ -47,7 +44,7 @@ export const Footer = () => {
               <span className="font-display text-2xl bg-gradient-to-r from-foreground to-foreground/70 bg-clip-text text-transparent">MathPlatform</span>
             </Link>
             <p className="text-muted-foreground leading-relaxed mb-6 max-w-sm">
-              {t.footer.description}
+              Matematika fanini o'rganish uchun interaktiv platforma. Nazariya, amaliyot va sun'iy intellekt yordamida bilimlaringizni oshiring.
             </p>
             
             {/* Social Links */}
@@ -68,31 +65,31 @@ export const Footer = () => {
           <div>
             <h4 className="font-display font-semibold text-lg mb-5 flex items-center gap-2">
               <div className="w-1.5 h-1.5 rounded-full bg-primary" />
-              {t.footer.navigation}
+              Bo'limlar
             </h4>
             <ul className="space-y-3">
               <li>
                 <Link to="/library" className="text-muted-foreground hover:text-foreground transition-colors inline-flex items-center gap-2.5 group">
                   <BookOpen className="w-4 h-4 text-primary/60 group-hover:text-primary transition-colors" />
-                  {t.nav.library}
+                  Kutubxona
                 </Link>
               </li>
               <li>
                 <Link to="/formulas" className="text-muted-foreground hover:text-foreground transition-colors inline-flex items-center gap-2.5 group">
                   <FileText className="w-4 h-4 text-primary/60 group-hover:text-primary transition-colors" />
-                  {t.nav.formulas}
+                  Formulalar
                 </Link>
               </li>
               <li>
                 <Link to="/tests" className="text-muted-foreground hover:text-foreground transition-colors inline-flex items-center gap-2.5 group">
                   <ClipboardList className="w-4 h-4 text-primary/60 group-hover:text-primary transition-colors" />
-                  {t.nav.tests}
+                  Testlar
                 </Link>
               </li>
               <li>
                 <Link to="/graphics" className="text-muted-foreground hover:text-foreground transition-colors inline-flex items-center gap-2.5 group">
                   <LineChart className="w-4 h-4 text-primary/60 group-hover:text-primary transition-colors" />
-                  {t.nav.graphics}
+                  Grafika
                 </Link>
               </li>
             </ul>
@@ -102,7 +99,7 @@ export const Footer = () => {
           <div>
             <h4 className="font-display font-semibold text-lg mb-5 flex items-center gap-2">
               <div className="w-1.5 h-1.5 rounded-full bg-accent" />
-              {t.footer.moreTopics}
+              Mavzular
             </h4>
             <ul className="space-y-3">
               <li>
@@ -136,19 +133,19 @@ export const Footer = () => {
           <div>
             <h4 className="font-display font-semibold text-lg mb-5 flex items-center gap-2">
               <div className="w-1.5 h-1.5 rounded-full bg-primary" />
-              {t.footer.help}
+              Qo'shimcha
             </h4>
             <ul className="space-y-3">
               <li>
                 <a href="#" className="text-muted-foreground hover:text-foreground transition-colors inline-flex items-center gap-2">
                   <ExternalLink className="w-3.5 h-3.5" />
-                  {t.footer.help}
+                  Yordam
                 </a>
               </li>
               <li>
                 <a href="#" className="text-muted-foreground hover:text-foreground transition-colors inline-flex items-center gap-2">
                   <ExternalLink className="w-3.5 h-3.5" />
-                  {t.footer.contact}
+                  Aloqa
                 </a>
               </li>
             </ul>
@@ -159,7 +156,7 @@ export const Footer = () => {
         <div className="border-t border-border/40 mt-12 pt-8">
           <div className="flex flex-col md:flex-row items-center justify-center gap-4">
             <p className="text-sm text-muted-foreground">
-              © 2025 MathPlatform. {t.footer.rights}
+              © 2025 MathPlatform. Barcha huquqlar himoyalangan.
             </p>
           </div>
         </div>

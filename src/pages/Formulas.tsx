@@ -6,10 +6,8 @@ import { formulaCategories } from "@/lib/formulas";
 import { Input } from "@/components/ui/input";
 import { Search } from "lucide-react";
 import { PageTransition } from "@/components/PageTransition";
-import { useLanguage } from "@/hooks/useLanguage";
 
 const Formulas = () => {
-  const { t } = useLanguage();
   const [searchQuery, setSearchQuery] = useState("");
 
   const filteredCategories = formulaCategories
@@ -34,10 +32,11 @@ const Formulas = () => {
             <div className="container mx-auto px-4">
               <div className="max-w-2xl mx-auto text-center">
                 <h1 className="font-display text-4xl md:text-5xl mb-4 text-foreground">
-                  {t.formulas.title}
+                  Matematik Formulalar
                 </h1>
                 <p className="text-muted-foreground text-lg mb-8">
-                  {t.formulas.subtitle}
+                  Algebra, geometriya, trigonometriya va boshqa mavzular bo'yicha 
+                  barcha kerakli formulalar bir joyda
                 </p>
                 
                 {/* Search */}
@@ -45,7 +44,7 @@ const Formulas = () => {
                   <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground" />
                   <Input
                     type="text"
-                    placeholder={t.formulas.searchPlaceholder}
+                    placeholder="Formula qidirish..."
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
                     className="pl-10 h-12 bg-card border-border"
@@ -82,7 +81,7 @@ const Formulas = () => {
               ) : (
                 <div className="text-center py-12">
                   <p className="text-muted-foreground text-lg">
-                    "{searchQuery}" {t.formulas.noFormulasFound}
+                    "{searchQuery}" bo'yicha formulalar topilmadi
                   </p>
                 </div>
               )}

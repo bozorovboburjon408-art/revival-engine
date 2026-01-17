@@ -9,10 +9,8 @@ import { Badge } from "@/components/ui/badge";
 import { Search, Trophy, Target, Clock, BookOpen } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { PageTransition } from "@/components/PageTransition";
-import { useLanguage } from "@/hooks/useLanguage";
 
 const Tests = () => {
-  const { t } = useLanguage();
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
   const [activeTestId, setActiveTestId] = useState<string | null>(null);
@@ -74,10 +72,10 @@ const Tests = () => {
           {/* Hero Section */}
           <div className="text-center mb-8">
             <h1 className="font-display text-4xl md:text-5xl font-bold mb-4">
-              {t.tests.title} <span className="text-primary">{t.tests.titleHighlight}</span>
+              Matematika <span className="text-primary">Testlari</span>
             </h1>
             <p className="text-muted-foreground text-lg max-w-2xl mx-auto">
-              {t.tests.subtitle}
+              Bilimingizni sinab ko'ring! Turli mavzular bo'yicha interaktiv testlar
             </p>
           </div>
 
@@ -90,7 +88,7 @@ const Tests = () => {
                 </div>
                 <div>
                   <p className="text-2xl font-bold">{tests.length}</p>
-                  <p className="text-xs text-muted-foreground">{t.tests.stats.tests}</p>
+                  <p className="text-xs text-muted-foreground">Testlar</p>
                 </div>
               </div>
             </div>
@@ -101,7 +99,7 @@ const Tests = () => {
                 </div>
                 <div>
                   <p className="text-2xl font-bold">{totalQuestions}</p>
-                  <p className="text-xs text-muted-foreground">{t.tests.stats.questions}</p>
+                  <p className="text-xs text-muted-foreground">Savollar</p>
                 </div>
               </div>
             </div>
@@ -112,7 +110,7 @@ const Tests = () => {
                 </div>
                 <div>
                   <p className="text-2xl font-bold">{completedCount}</p>
-                  <p className="text-xs text-muted-foreground">{t.tests.stats.completed}</p>
+                  <p className="text-xs text-muted-foreground">Tugatilgan</p>
                 </div>
               </div>
             </div>
@@ -125,7 +123,7 @@ const Tests = () => {
                   <p className="text-2xl font-bold">
                     {totalAnswered > 0 ? Math.round((totalScore / totalAnswered) * 100) : 0}%
                   </p>
-                  <p className="text-xs text-muted-foreground">{t.tests.stats.avgScore}</p>
+                  <p className="text-xs text-muted-foreground">O'rtacha ball</p>
                 </div>
               </div>
             </div>
@@ -136,7 +134,7 @@ const Tests = () => {
             <div className="relative max-w-md mx-auto">
               <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
               <Input
-                placeholder={t.tests.searchPlaceholder}
+                placeholder="Test qidirish..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 className="pl-10"
@@ -149,7 +147,7 @@ const Tests = () => {
                 className="cursor-pointer px-4 py-1.5"
                 onClick={() => setSelectedCategory(null)}
               >
-                {t.common.all}
+                Barchasi
               </Badge>
               {categories.map(category => (
                 <Badge
@@ -189,7 +187,7 @@ const Tests = () => {
 
           {filteredTests.length === 0 && (
             <div className="text-center py-12">
-              <p className="text-muted-foreground">{t.tests.noTestsFound}</p>
+              <p className="text-muted-foreground">Hech qanday test topilmadi</p>
             </div>
           )}
         </main>

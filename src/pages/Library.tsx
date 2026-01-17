@@ -5,11 +5,8 @@ import { mathTopics } from "@/lib/mathTopics";
 import { BookOpen, ChevronRight } from "lucide-react";
 import { TopicVisualization } from "@/components/library/TopicVisualization";
 import { PageTransition } from "@/components/PageTransition";
-import { useLanguage } from "@/hooks/useLanguage";
 
 const Library = () => {
-  const { t } = useLanguage();
-
   return (
     <PageTransition>
       <div className="min-h-screen flex flex-col">
@@ -21,13 +18,13 @@ const Library = () => {
               <div className="max-w-3xl">
                 <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-primary/10 border border-primary/20 text-primary text-sm font-medium mb-6">
                   <BookOpen className="w-4 h-4" />
-                  {t.library.badge}
+                  18 ta mavzu
                 </div>
                 <h1 className="font-display text-5xl md:text-6xl mb-4">
-                  {t.library.title} <span className="gradient-text">{t.library.titleHighlight}</span>
+                  Matematik <span className="gradient-text">Kutubxona</span>
                 </h1>
                 <p className="text-xl text-muted-foreground">
-                  {t.library.subtitle}
+                  Matematik analiz va differensial tenglamalar bo'yicha to'liq nazariy materiallar
                 </p>
               </div>
             </div>

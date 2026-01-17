@@ -1,11 +1,8 @@
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { ArrowRight, Sparkles, BookOpen } from "lucide-react";
-import { useLanguage } from "@/hooks/useLanguage";
 
 export const HeroSection = () => {
-  const { t } = useLanguage();
-
   return (
     <section className="relative min-h-[95vh] flex items-center justify-center overflow-hidden">
       {/* Background */}
@@ -36,14 +33,14 @@ export const HeroSection = () => {
             <div className="flex items-center justify-center w-6 h-6 rounded-full bg-primary/20">
               <Sparkles className="w-3.5 h-3.5 text-primary" />
             </div>
-            <span className="gradient-text font-semibold">{t.hero.badge}</span>
+            <span className="gradient-text font-semibold">Interaktiv matematika platformasi</span>
           </div>
 
           {/* Main Title */}
           <h1 className="text-5xl md:text-7xl lg:text-8xl tracking-tight mb-8 animate-slide-up">
-            {t.hero.title}{" "}
+            Matematikani{" "}
             <span className="relative">
-              <span className="gradient-text">{t.hero.titleHighlight}</span>
+              <span className="gradient-text">osonlashtiring</span>
               <svg className="absolute -bottom-2 left-0 w-full" viewBox="0 0 300 12" fill="none">
                 <path d="M2 10C50 4 100 2 150 6C200 10 250 4 298 8" stroke="url(#underline-gradient)" strokeWidth="4" strokeLinecap="round"/>
                 <defs>
@@ -59,9 +56,8 @@ export const HeroSection = () => {
 
           {/* Subtitle */}
           <p className="text-xl md:text-2xl text-muted-foreground max-w-3xl mx-auto mb-12 animate-slide-up leading-relaxed" style={{ animationDelay: "0.1s" }}>
-            {t.hero.subtitle}{" "}
-            <span className="text-foreground font-medium">{t.hero.subtitleHighlight}</span>
-            {t.hero.subtitleEnd && ` ${t.hero.subtitleEnd}`}
+            Hosilalar, integrallar, differensial tenglamalar va boshqa mavzularni{" "}
+            <span className="text-foreground font-medium">interaktiv</span> tarzda o'rganing
           </p>
 
           {/* CTA Button */}
@@ -69,7 +65,7 @@ export const HeroSection = () => {
             <Link to="/library">
               <Button variant="hero" size="xl" className="gap-3 group min-w-[200px]">
                 <BookOpen className="w-5 h-5" />
-                {t.hero.cta}
+                Boshlash
                 <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
               </Button>
             </Link>
@@ -78,9 +74,9 @@ export const HeroSection = () => {
           {/* Stats */}
           <div className="grid grid-cols-3 gap-6 max-w-2xl mx-auto mt-20 animate-slide-up" style={{ animationDelay: "0.3s" }}>
             {[
-              { value: "18+", label: t.hero.stats.topics, icon: "📚" },
-              { value: "174+", label: t.hero.stats.formulas, icon: "📐" },
-              { value: "∞", label: t.hero.stats.examples, icon: "🔢" },
+              { value: "18+", label: "Mavzular", icon: "📚" },
+              { value: "174+", label: "Formulalar", icon: "📐" },
+              { value: "∞", label: "Misollar", icon: "🔢" },
             ].map((stat, i) => (
               <div 
                 key={stat.label} 

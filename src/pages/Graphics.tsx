@@ -10,7 +10,6 @@ import { Switch } from "@/components/ui/switch";
 import { RotateCcw, Plus, Trash2, Crosshair, TrendingUp, AreaChart } from "lucide-react";
 import { toast } from "sonner";
 import { PageTransition } from "@/components/PageTransition";
-import { useLanguage } from "@/hooks/useLanguage";
 
 interface FunctionItem {
   id: string;
@@ -32,7 +31,6 @@ interface IntegralBounds {
 const COLORS = ['#f97316', '#22c55e', '#3b82f6', '#a855f7', '#ec4899', '#14b8a6'];
 
 const Graphics = () => {
-  const { t, language } = useLanguage();
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
   const animationRef = useRef<number>(0);
@@ -573,13 +571,13 @@ const Graphics = () => {
 
   const addFunction = () => {
     if (!newExpression.trim()) {
-      toast.error(language === 'uz' ? "Funksiya kiriting" : "Enter a function");
+      toast.error("Funksiya kiriting");
       return;
     }
     
     const testResult = evaluateExpression(newExpression, 1);
     if (testResult === null) {
-      toast.error(language === 'uz' ? "Noto'g'ri funksiya formati" : "Invalid function format");
+      toast.error("Noto'g'ri funksiya formati");
       return;
     }
 
@@ -591,12 +589,12 @@ const Graphics = () => {
       color: COLORS[colorIndex] 
     }]);
     setNewExpression('');
-    toast.success(language === 'uz' ? "Funksiya qo'shildi" : "Function added");
+    toast.success("Funksiya qo'shildi");
   };
 
   const removeFunction = (id: string) => {
     if (functions.length === 1) {
-      toast.error(language === 'uz' ? "Kamida bitta funksiya bo'lishi kerak" : "At least one function is required");
+      toast.error("Kamida bitta funksiya bo'lishi kerak");
       return;
     }
     setFunctions(functions.filter(f => f.id !== id));
@@ -673,10 +671,11 @@ const Graphics = () => {
         {/* Hero Section */}
         <div className="text-center mb-8">
           <h1 className="font-display text-4xl md:text-5xl font-bold mb-4">
-            {t.graphics.title} <span className="text-primary">{t.graphics.titleHighlight}</span>
+            Funksiya <span className="text-primary">Grafigi</span>
           </h1>
           <p className="text-muted-foreground max-w-2xl mx-auto">
-            {t.graphics.subtitle}
+            Matematik funksiyalarni yozing va grafiklarini ko'ring. 
+            Bir nechta funksiyalarni solishtiring.
           </p>
         </div>
 
@@ -685,7 +684,7 @@ const Graphics = () => {
           <div className="space-y-4">
             <Card>
               <CardHeader className="pb-3">
-                <CardTitle className="text-lg">{language === 'uz' ? 'Funksiyalar' : 'Functions'}</CardTitle>
+                <CardTitle className="text-lg">Funksiyalar</CardTitle>
               </CardHeader>
               <CardContent className="space-y-4">
                 {functions.map((func) => (
@@ -738,7 +737,7 @@ const Graphics = () => {
               <CardHeader className="pb-2">
                 <CardTitle className="text-sm flex items-center gap-2">
                   <Crosshair className="h-4 w-4" />
-                  {t.graphics.pointOnGraph}
+                  Nuqta qiymatlari
                 </CardTitle>
               </CardHeader>
               <CardContent className="space-y-3">
@@ -754,8 +753,8 @@ const Graphics = () => {
                       const val = parseFloat(e.target.value);
                       setManualXPoint(isNaN(val) ? null : val);
                     }}
-                      placeholder={t.graphics.enterX}
-                      className="h-8 font-mono text-sm"
+                    placeholder="qiymat kiriting"
+                    className="h-8 font-mono text-sm"
                   />
                 </div>
 
@@ -763,7 +762,7 @@ const Graphics = () => {
                 {(manualXPoint !== null || cursorPos) && (
                   <div className="space-y-2 pt-2 border-t border-border">
                     <div className="text-xs text-muted-foreground">
-                      {manualXPoint !== null ? `x = ${manualXPoint}` : cursorPos ? `x = ${cursorPos.x.toFixed(3)} (${language === 'uz' ? 'kursor' : 'cursor'})` : ''}
+                      {manualXPoint !== null ? `x = ${manualXPoint}` : cursorPos ? `x = ${cursorPos.x.toFixed(3)} (kursor)` : ''}
                     </div>
                     {functions.map((func, i) => {
                       const xVal = manualXPoint !== null ? manualXPoint : cursorPos?.x;
@@ -787,7 +786,7 @@ const Graphics = () => {
                       <div className="pt-2 border-t border-border">
                         <div className="flex items-center justify-between text-sm">
                           <span className="flex items-center gap-1 text-muted-foreground">
-                            <TrendingUp className="h-3 w-3" /> {t.graphics.derivative} (f₁)
+                            <TrendingUp className="h-3 w-3" /> Hosila (f₁)
                           </span>
                           <span className="font-mono">
                             {calculateDerivative(
@@ -809,7 +808,7 @@ const Graphics = () => {
                 <CardTitle className="text-sm flex items-center justify-between">
                   <span className="flex items-center gap-2">
                     <AreaChart className="h-4 w-4" />
-                    {t.graphics.integral}
+                    Integral (Yuza)
                   </span>
                   <Switch
                     checked={showIntegral}
@@ -821,7 +820,7 @@ const Graphics = () => {
                 <CardContent className="space-y-4">
                   {/* Function selector */}
                   <div className="space-y-2">
-                    <Label className="text-xs">{language === 'uz' ? 'Funksiya' : 'Function'}</Label>
+                    <Label className="text-xs">Funksiya</Label>
                     <div className="flex flex-wrap gap-1">
                       {functions.map((f, i) => (
                         <Button
@@ -844,7 +843,7 @@ const Graphics = () => {
                   {/* Bounds inputs */}
                   <div className="grid grid-cols-2 gap-3">
                     <div className="space-y-1">
-                      <Label className="text-xs">a ({language === 'uz' ? "boshlang'ich" : 'start'})</Label>
+                      <Label className="text-xs">a (boshlang'ich)</Label>
                       <Input
                         type="number"
                         step="0.1"
@@ -857,7 +856,7 @@ const Graphics = () => {
                       />
                     </div>
                     <div className="space-y-1">
-                      <Label className="text-xs">b ({language === 'uz' ? 'oxirgi' : 'end'})</Label>
+                      <Label className="text-xs">b (oxirgi)</Label>
                       <Input
                         type="number"
                         step="0.1"
@@ -890,7 +889,7 @@ const Graphics = () => {
             {roots.some(r => r.points.length > 0) && (
               <Card>
                 <CardHeader className="pb-2">
-                  <CardTitle className="text-sm">{t.graphics.roots}</CardTitle>
+                  <CardTitle className="text-sm">Nol nuqtalar (x o'qi bilan kesishish)</CardTitle>
                 </CardHeader>
                 <CardContent className="space-y-2">
                   {roots.filter(r => r.points.length > 0).map((r, i) => (
@@ -916,7 +915,7 @@ const Graphics = () => {
             {intersections.length > 0 && (
               <Card>
                 <CardHeader className="pb-2">
-                  <CardTitle className="text-sm">{t.graphics.intersections}</CardTitle>
+                  <CardTitle className="text-sm">Kesishish nuqtalari</CardTitle>
                 </CardHeader>
                 <CardContent>
                   <div className="flex flex-wrap gap-1">
@@ -933,7 +932,7 @@ const Graphics = () => {
             {/* Examples */}
             <Card>
               <CardHeader className="pb-3">
-                <CardTitle className="text-lg">{language === 'uz' ? 'Misollar' : 'Examples'}</CardTitle>
+                <CardTitle className="text-lg">Misollar</CardTitle>
               </CardHeader>
               <CardContent>
                 <div className="flex flex-wrap gap-2">
@@ -955,11 +954,11 @@ const Graphics = () => {
             {/* Controls */}
             <Card>
               <CardHeader className="pb-3">
-                <CardTitle className="text-lg">{language === 'uz' ? 'Boshqarish' : 'Controls'}</CardTitle>
+                <CardTitle className="text-lg">Boshqarish</CardTitle>
               </CardHeader>
               <CardContent className="space-y-4">
                 <div className="space-y-2">
-                  <Label>{t.graphics.zoom}: {zoom}</Label>
+                  <Label>Kattalashtirish: {zoom}</Label>
                   <input
                     type="range"
                     min="20"
@@ -975,7 +974,7 @@ const Graphics = () => {
                   className="w-full"
                 >
                   <RotateCcw className="h-4 w-4 mr-2" />
-                  {t.graphics.reset}
+                  Qaytarish
                 </Button>
               </CardContent>
             </Card>
@@ -998,9 +997,9 @@ const Graphics = () => {
                   onWheel={handleWheel}
                 />
                 <p className="text-xs text-muted-foreground mt-2 text-center">
-                  {language === 'uz' ? "Suring - ko'chirish | G'ildirak - kattalashtirish" : "Drag - move | Wheel - zoom"} | 
-                  <span className="text-primary"> ● </span>{language === 'uz' ? 'Nol nuqta' : 'Root'} | 
-                  <span className="text-yellow-500"> ● </span>{t.graphics.intersections}
+                  Suring - ko'chirish | G'ildirak - kattalashtirish | 
+                  <span className="text-primary"> ● </span>Nol nuqta | 
+                  <span className="text-yellow-500"> ● </span>Kesishish
                 </p>
               </CardContent>
             </Card>
